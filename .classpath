@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="C:/Users/Devon1337/Desktop/NFRPG/spigot-1.15.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Devon1337/Desktop/NFRPG/sqljdbc42.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Devon1337/Desktop/NFRPG/mssql-jdbc-8.2.2.jre11.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
