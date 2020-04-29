@@ -7,6 +7,7 @@ import com.devon1337.RPG.Utils.Raycast.Exceptions.BadProjectile;
 import com.devon1337.RPG.Utils.Raycast.Exceptions.ObjectsNotUsed;
 import com.devon1337.RPG.ActiveAbilities.Assassinate;
 import com.devon1337.RPG.ActiveAbilities.Charge;
+import com.devon1337.RPG.ActiveAbilities.Confusion;
 import com.devon1337.RPG.ActiveAbilities.Vanish;
 import com.devon1337.RPG.Classes.Rogue;
 import com.devon1337.RPG.Commands.CheckLevel;
@@ -18,7 +19,6 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.sql.SQLException;
 import java.util.Scanner;
 
 import org.bukkit.Bukkit;
@@ -50,19 +50,17 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 	public Vanish vanish = new Vanish();
 	public Charge charge = new Charge();
 	public Assassinate assassinate = new Assassinate();
+	public Confusion confusion = new Confusion();
 	public static DatabaseAccess dba = new DatabaseAccess();
-	
-	
-	
+
 	public BukkitScheduler scheduler = getServer().getScheduler();
 
 	public static Scanner input = new Scanner(System.in);
 
 	public void onEnable() {
 		gameplayScheduler(this);
-		
-		dba.initClassLoader();
-		
+
+
 		getServer().getPluginManager().registerEvents(this, this);
 		getCommand("class").setExecutor(new PickClass());
 		getCommand("simulate").setExecutor(new SimulateSpell());
@@ -73,7 +71,6 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 
 	}
 
-	
 	@SuppressWarnings("unused")
 	private void addClassPath(final URL url) throws IOException {
 		final URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
@@ -88,7 +85,6 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		}
 	}
 
-	
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
 		Player player = (Player) event.getWhoClicked();
@@ -105,34 +101,20 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		}
 
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	public static OfflinePlayer getOfflinePlayer(String username) {
 		return Bukkit.getOfflinePlayer(username);
 	}
-	
+
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		Player player = event.getPlayer();
-		
-		try {
-			if(!dba.exists(player.getName())) {
-				try {
-					dba.createProfile(player);
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				player.sendMessage("Profile created!");
-			} else {
-				player.sendMessage("You are already in the database!");
-			}
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		//Player player = event.getPlayer();
+
+		dba.testConn();
+
 	}
-	
+
 	@EventHandler
 	public void onPlayerUse(PlayerInteractEvent event) throws BadProjectile, ObjectsNotUsed {
 		Player player = event.getPlayer();
@@ -144,24 +126,28 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 				@SuppressWarnings("unused")
 				Simulate raycast = new Simulate(player, ProjectileType.FIREBALL);
 			}
+			
+			if (item.getType() == Material.BLUE_DYE) {
+				confusion.use(player,  new Simulate(player, ProjectileType.ARROW));
+			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onProjectileHit(ProjectileHitEvent event) {
 		@SuppressWarnings("unused")
 		Player player = (Player) event.getEntity().getShooter();
-		
-		if(event.getEntity() instanceof Arrow) {
-			
+
+		if (event.getEntity() instanceof Arrow) {
+
 			boolean raycast = event.getEntity().getMetadata("raycast").get(0).asBoolean();
-			if(raycast) {
+			if (raycast) {
 				event.getEntity().remove();
-				
+
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onHit(EntityDamageByEntityEvent event) {
 		if (event.getEntity() instanceof Player && event.getDamager() instanceof Player) {
@@ -174,7 +160,7 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 					assassinate.use(player, target);
 				}
 			}
-			
+
 		}
 	}
 
@@ -184,7 +170,7 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 
 			@Override
 			public void run() {
-				//System.out.println("-- GLOBAL GAME CYCLE --");
+				// System.out.println("-- GLOBAL GAME CYCLE --");
 				gameplayLoop();
 				rogue.roguePassiveReset();
 				rogue.roguePassive();
@@ -198,14 +184,15 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		vanish.updateCooldowns();
 		charge.updateCooldowns();
 		assassinate.updateCooldowns();
+		confusion.updateCooldowns();
 	}
 
 	public static Plugin getPlugin() {
 		return NightFallRPG.getPlugin(NightFallRPG.class);
 	}
-	
+
 	public static World getWorld() {
 		return Bukkit.getWorlds().get(0);
 	}
-	
+
 }

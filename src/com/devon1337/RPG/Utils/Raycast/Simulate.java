@@ -231,7 +231,7 @@ public class Simulate {
 		arrow.setSilent(true);
 		arrow.setMetadata("raycast", new FixedMetadataValue(plugin, true));
 
-		// arrowClippingRunnable(plugin, bullet);
+		//arrowClippingRunnable(plugin, bullet);
 	}
 
 	private void removeFireball() throws ObjectsNotUsed {

@@ -3,11 +3,12 @@ package com.devon1337.RPG.ActiveAbilities;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import net.md_5.bungee.api.ChatColor;
+
 
 public class Vanish {
 	
