@@ -12,6 +12,13 @@ public class PlayerLevel {
 	public static int getLevel(Player player) { return pLevel.get(player); }
 	public static void setLevel(Player player, int level) { pLevel.remove(player); pLevel.put(player, level); }
 	
+	public static boolean exists(Player player) { 
+		if(pLevel.containsKey(player)) {
+			return true;
+		}
+		return false;
+	}
+	
 	public static double getXP(Player player) { return pExperience.get(player); }
 	public static void setXP(Player player, double XP) { pExperience.remove(player); pExperience.put(player, XP); }
 	

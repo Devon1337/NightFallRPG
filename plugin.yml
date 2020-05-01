@@ -1,6 +1,6 @@
 name: NightFallRPG
 main: com.devon1337.RPG.NightFallRPG
-version: 0.1.2.0279
+version: 0.1.2.0280
 api-version: 1.15
 author: Devon1337
 commands:
@@ -12,4 +12,7 @@ commands:
       usage: /<command>
    level:
       description: read/write user level data.
+      usage: /<command>
+   spellbook:
+      description: Opens the spell book.
       usage: /<command>

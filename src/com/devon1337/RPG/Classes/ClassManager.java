@@ -4,12 +4,14 @@ import java.util.ArrayList;
 
 import org.bukkit.entity.Player;
 
+import com.devon1337.RPG.NFClasses;
+
 public class ClassManager {
 
-	public Rogue rogue = new Rogue();
-	public Druid druid = new Druid();
-	public Warrior warrior = new Warrior();
-	public Mage mage = new Mage();
+	public static Rogue rogue = new Rogue();
+	public static Druid druid = new Druid();
+	public static Warrior warrior = new Warrior();
+	public static Mage mage = new Mage();
 	
 	public boolean isPlayerInTeam(Player player, boolean remove) {
 		
@@ -55,6 +57,24 @@ public class ClassManager {
 		}
 		
 		return false;
+		
+	}
+	
+	public static NFClasses getTeam(Player player) {
+		if(rogue.playerExists(player)) {
+			return NFClasses.ROGUE;
+		}
+		if(druid.playerExists(player)) {
+			return NFClasses.DRUID;
+		}
+		if(warrior.playerExists(player)) {
+			return NFClasses.WARRIOR;
+		}
+		if(mage.playerExists(player)) {
+			return NFClasses.MAGE;
+		}
+		
+		return null;
 		
 	}
 	

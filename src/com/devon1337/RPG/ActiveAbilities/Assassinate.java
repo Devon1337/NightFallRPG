@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 
@@ -11,6 +12,8 @@ import org.bukkit.entity.Player;
 public class Assassinate {
 
 	public final int COOLDOWN_AMOUNT = 10;
+	public final int CLASS_TYPE = 1; // -- Rogue
+	public final Material ITEM = Material.DIAMOND_HOE;
 	
 	public static HashMap<Player, Integer> pCooldowns = new HashMap<Player, Integer>();
 	
@@ -40,6 +43,21 @@ public class Assassinate {
 				pCooldowns.remove(entry.getKey());
 			}
 		}
+	}
+	
+	public int getCooldown(Player player) {
+		if(pCooldowns.containsKey(player)) {
+		return pCooldowns.get(player);
+		}
+		
+		return 0;
+	}
+	
+	public void setCooldown(Player player, int cooldown_amount) {
+		if(pCooldowns.containsKey(player)) {
+			pCooldowns.remove(player);
+		}
+		pCooldowns.put(player, cooldown_amount);
 	}
 	
 	
