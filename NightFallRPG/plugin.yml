@@ -1,0 +1,18 @@
+name: NightFallRPG
+main: com.devon1337.RPG.NightFallRPG
+version: 0.1.2.0280
+api-version: 1.15
+author: Devon1337
+commands:
+   class:
+      description: Opens NightFall's classes.
+      usage: /<command>
+   simulate:
+      description: Simulates an active ability
+      usage: /<command>
+   level:
+      description: read/write user level data.
+      usage: /<command>
+   spellbook:
+      description: Opens the spell book.
+      usage: /<command>
