@@ -26,6 +26,9 @@ public class ActiveAbilityManager {
 	public Charge charge = new Charge();
 	public Confusion confusion = new Confusion();
 	public Vanish vanish = new Vanish();
+	public Fireball fireball = new Fireball();
+	public Wrath wrath = new Wrath();
+	public Entanglement entanglement = new Entanglement();
 	
 	public int getCooldownTime(NFAbilities active, Player player) {
 		switch(active) {
@@ -37,6 +40,10 @@ public class ActiveAbilityManager {
 			return confusion.getCooldown(player);
 		case VANISH:
 			return vanish.getCooldown(player);
+		case FIREBALL:
+			return fireball.getCooldown(player);
+		default:
+			break;
 		}
 		return 0;
 	}
@@ -79,6 +86,12 @@ public class ActiveAbilityManager {
 		abilityItems.put(NFAbilities.CONFUSION, confusion.ITEM);
 		activeAbilities.put(NFAbilities.VANISH, vanish.CLASS_TYPE);
 		abilityItems.put(NFAbilities.VANISH, vanish.ITEM);
+		activeAbilities.put(NFAbilities.FIREBALL, fireball.CLASS_TYPE);
+		abilityItems.put(NFAbilities.FIREBALL, fireball.ITEM);
+		activeAbilities.put(NFAbilities.WRATH, wrath.CLASS_TYPE);
+		abilityItems.put(NFAbilities.WRATH, wrath.ITEM);
+		activeAbilities.put(NFAbilities.ENTANGLEMENT, entanglement.CLASS_TYPE);
+		abilityItems.put(NFAbilities.ENTANGLEMENT, entanglement.ITEM);
 	}
 	
 	public static ArrayList<NFAbilities> getClassSpells(NFClasses pClass) {

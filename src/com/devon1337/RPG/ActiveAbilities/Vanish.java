@@ -17,6 +17,7 @@ public class Vanish {
 	public final int DURATION_AMOUNT = 3;
 	public final int CLASS_TYPE = 1; // -- Rogue
 	public final Material ITEM = Material.PHANTOM_MEMBRANE;
+	public final Material CD_ITEM = Material.DIAMOND_SHOVEL;
 	
 	public static HashMap<Player, Integer> pCooldowns = new HashMap<Player, Integer>(); 
 

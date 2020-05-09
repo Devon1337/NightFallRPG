@@ -1,5 +1,8 @@
 package com.devon1337.RPG.Utils.Raycast;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
@@ -16,6 +19,8 @@ import com.devon1337.RPG.Utils.Raycast.Exceptions.IllegalPluginAccess;
 import com.devon1337.RPG.Utils.Raycast.Exceptions.InvalidTarget;
 import com.devon1337.RPG.Utils.Raycast.Exceptions.ObjectsNotUsed;
 
+import net.minecraft.server.v1_15_R1.PacketPlayOutEntityDestroy;
+
 public class Simulate {
 
 	public Player target;
@@ -27,6 +32,7 @@ public class Simulate {
 	public Arrow arrow;
 	public Fireball fireball;
 	public SmallFireball smallfireball;
+	public static Location loc;
 
 	/*
 	 * Summary: Used for external use, Arrow Default
@@ -58,6 +64,10 @@ public class Simulate {
 		case FIREBALL:
 			useFireball(player, plugin);
 			clippingTimer(plugin, ProjectileType.FIREBALL);
+			break;
+		case SMALL_FIREBALL:
+			useSmallFireball(player, plugin);
+			clippingTimer(plugin, ProjectileType.SMALL_FIREBALL);
 			break;
 		default:
 			throw new BadProjectile("Exception: BadProjectile -- Refer to com.devon1337.RPG.Utils.Raycast");
@@ -215,10 +225,19 @@ public class Simulate {
 	}
 
 	private void useSmallFireball(Player player, Plugin plugin) {
-		smallfireball = (SmallFireball) NightFallRPG.getWorld().spawnEntity(player.getLocation(),
+		int x = player.getLocation().getBlockX();
+		int y = player.getLocation().getBlockY() + 1;
+		int z = player.getLocation().getBlockZ();
+		float pitch = player.getLocation().getPitch();
+		float yaw = player.getLocation().getYaw();
+		loc = new Location(player.getLocation().getWorld(), x,y,z, yaw, pitch);
+		smallfireball = (SmallFireball) NightFallRPG.getWorld().spawnEntity(loc,
 				EntityType.SMALL_FIREBALL);
-
-		fireball.setMetadata("raycast", new FixedMetadataValue(plugin, true));
+		smallfireball.setGravity(false);
+		
+		smallfireball.setMetadata("raycast", new FixedMetadataValue(plugin, true));
+		
+		//useArrow(player, plugin);
 	}
 
 	private void useArrow(Player player, Plugin plugin) {
@@ -229,7 +248,13 @@ public class Simulate {
 		arrow.setKnockbackStrength(0);
 		arrow.setGravity(false);
 		arrow.setSilent(true);
+		arrow.setInvulnerable(true);
 		arrow.setMetadata("raycast", new FixedMetadataValue(plugin, true));
+		
+		for(Player p : Bukkit.getServer().getOnlinePlayers()) {
+		    PacketPlayOutEntityDestroy packet = new PacketPlayOutEntityDestroy(arrow.getEntityId());
+		    ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet);
+		}
 
 		//arrowClippingRunnable(plugin, bullet);
 	}
@@ -305,6 +330,10 @@ public class Simulate {
 			}
 
 		}, 20 * 15);
+	}
+	
+	public Location getLocation() {
+		return loc;
 	}
 
 	public void setTarget(Player player) {

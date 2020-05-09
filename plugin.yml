@@ -1,6 +1,6 @@
 name: NightFallRPG
 main: com.devon1337.RPG.NightFallRPG
-version: 0.1.2.0280
+version: 0.1.2.0281
 api-version: 1.15
 author: Devon1337
 commands:
@@ -15,4 +15,10 @@ commands:
       usage: /<command>
    spellbook:
       description: Opens the spell book.
+      usage: /<command>
+   roll:
+      description: rolls a dice.
+      usage: /<command>
+   trade:
+      description: Trade window.
       usage: /<command>

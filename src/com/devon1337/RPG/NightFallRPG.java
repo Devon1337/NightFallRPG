@@ -4,19 +4,22 @@ import com.devon1337.RPG.Player.*;
 import com.devon1337.RPG.Utils.Raycast.ProjectileType;
 import com.devon1337.RPG.Utils.Raycast.Simulate;
 import com.devon1337.RPG.Utils.Raycast.Exceptions.BadProjectile;
+import com.devon1337.RPG.Utils.Raycast.Exceptions.InvalidTarget;
 import com.devon1337.RPG.Utils.Raycast.Exceptions.ObjectsNotUsed;
 import com.devon1337.RPG.ActiveAbilities.ActiveAbilityManager;
 import com.devon1337.RPG.ActiveAbilities.Assassinate;
 import com.devon1337.RPG.ActiveAbilities.Charge;
 import com.devon1337.RPG.ActiveAbilities.Confusion;
-import com.devon1337.RPG.ActiveAbilities.NFAbilities;
+import com.devon1337.RPG.ActiveAbilities.Fireball;
 import com.devon1337.RPG.ActiveAbilities.Vanish;
 import com.devon1337.RPG.Classes.ClassManager;
 import com.devon1337.RPG.Classes.Rogue;
 import com.devon1337.RPG.Commands.CheckLevel;
 import com.devon1337.RPG.Commands.OpenSpellBook;
 import com.devon1337.RPG.Commands.PickClass;
+import com.devon1337.RPG.Commands.Roll;
 import com.devon1337.RPG.Commands.SimulateSpell;
+import com.devon1337.RPG.Commands.Trade;
 import com.devon1337.RPG.Menus.*;
 
 import java.io.IOException;
@@ -28,6 +31,7 @@ import java.util.Scanner;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
@@ -55,25 +59,27 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 	public Charge charge = new Charge();
 	public Assassinate assassinate = new Assassinate();
 	public Confusion confusion = new Confusion();
+	public Fireball fireball = new Fireball();
 	public ActiveAbilityManager aam = new ActiveAbilityManager();
 	public static DatabaseAccess dba = new DatabaseAccess();
 	public static Simulate sim;
-
+	
 	public BukkitScheduler scheduler = getServer().getScheduler();
 
 	public static Scanner input = new Scanner(System.in);
 
 	public void onEnable() {
 		aam.init_abilities();
-		
-		gameplayScheduler(this);
 
+		gameplayScheduler(this);
 
 		getServer().getPluginManager().registerEvents(this, this);
 		getCommand("class").setExecutor(new PickClass());
 		getCommand("simulate").setExecutor(new SimulateSpell());
 		getCommand("level").setExecutor(new CheckLevel());
 		getCommand("spellbook").setExecutor(new OpenSpellBook());
+		getCommand("roll").setExecutor(new Roll());
+		getCommand("trade").setExecutor(new Trade());
 	}
 
 	public void onDisable() {
@@ -118,13 +124,15 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		//Player player = event.getPlayer();
-		if(!PlayerLevel.exists(event.getPlayer())) {
-		PlayerLevel.setLevel(event.getPlayer(), 1);
-		PlayerLevel.setXP(event.getPlayer(), 0);
+		// Player player = event.getPlayer();
+		if (!PlayerLevel.exists(event.getPlayer())) {
+			PlayerLevel.setLevel(event.getPlayer(), 1);
+			PlayerLevel.setXP(event.getPlayer(), 0);
+			PlayerLevel.setXPRate(event.getPlayer(), 1);
 		}
-		event.getPlayer().sendMessage("Welcome " + event.getPlayer().getDisplayName() + " level: " + PlayerLevel.getLevel(event.getPlayer()));
-		//dba.testConn();
+		event.getPlayer().sendMessage(
+				"Welcome " + event.getPlayer().getDisplayName() + " level: " + PlayerLevel.getLevel(event.getPlayer()));
+		// dba.testConn();
 
 	}
 
@@ -135,15 +143,29 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 
 		if (event.getAction() == Action.RIGHT_CLICK_AIR) {
 
+			if (item.getType() == Material.ORANGE_DYE) {
+				charge.use(player);
+			}
+			
 			if (item.getType() == Material.WHITE_DYE) {
 				@SuppressWarnings("unused")
 				Simulate raycast = new Simulate(player, ProjectileType.FIREBALL);
 			}
+
+			if (item.getType() == Material.RED_DYE) {
+				if (ClassManager.getTeam(player) == NFClasses.MAGE
+						&& !fireball.Exists(player)) {
+					aam.runFluidCasting(player);
+				}
+				
+				fireball.use(player);
+			}
 			
 			if (item.getType() == Material.BLUE_DYE) {
-				
+
 				sim = new Simulate(player, ProjectileType.ARROW);
-				if(ClassManager.getTeam(player) == NFClasses.MAGE && aam.getCooldownTime(NFAbilities.CONFUSION, player) < 1) {
+				if (ClassManager.getTeam(player) == NFClasses.MAGE
+						&& !confusion.Exists(player)) {
 					aam.runFluidCasting(player);
 				}
 				confusion.use(player, sim);
@@ -153,18 +175,28 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 
 	@EventHandler
 	public void onProjectileHit(ProjectileHitEvent event) {
-		@SuppressWarnings("unused")
 		Player player = (Player) event.getEntity().getShooter();
 
 		if (event.getEntity() instanceof Arrow) {
 
 			boolean raycast = event.getEntity().getMetadata("raycast").get(0).asBoolean();
+			
 			if (raycast) {
-				sim.setTarget((Player) event.getHitEntity());
-				event.getEntity().remove();
-				if(sim != null) {
-				confusion.ability(player, sim);
+				if (event.getHitEntity() instanceof Player) {
+					sim.setTarget((Player) event.getHitEntity());
+
+					event.getEntity().remove();
+					if (sim != null) {
+						confusion.ability(player, sim);
+						try {
+							player.spawnParticle(Particle.EXPLOSION_NORMAL, sim.getTarget().getLocation(), 1, 0.0, 0.0, 0.5);
+						} catch (InvalidTarget e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
 				}
+				
 			}
 		}
 	}
@@ -206,6 +238,7 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		charge.updateCooldowns();
 		assassinate.updateCooldowns();
 		confusion.updateCooldowns();
+		fireball.updateCooldowns();
 	}
 
 	public static Plugin getPlugin() {

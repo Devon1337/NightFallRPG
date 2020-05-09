@@ -14,6 +14,7 @@ public class Assassinate {
 	public final int COOLDOWN_AMOUNT = 10;
 	public final int CLASS_TYPE = 1; // -- Rogue
 	public final Material ITEM = Material.DIAMOND_HOE;
+	public final Material CD_ITEM = Material.DIAMOND_SHOVEL;
 	
 	public static HashMap<Player, Integer> pCooldowns = new HashMap<Player, Integer>();
 	

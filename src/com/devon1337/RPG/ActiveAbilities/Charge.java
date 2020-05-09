@@ -15,6 +15,7 @@ public class Charge {
 	public final int DURATION_AMOUNT = 4;
 	public final int CLASS_TYPE = 2; // -- Warrior
 	public final Material ITEM = Material.ORANGE_DYE;
+	public final Material CD_ITEM = Material.LIME_DYE;
 
 	public static HashMap<Player, Integer> pCooldowns = new HashMap<Player, Integer>();
 	

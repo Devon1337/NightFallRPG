@@ -6,9 +6,9 @@ import org.bukkit.potion.PotionEffectType;
 
 public class FluidCasting {
 
-	@SuppressWarnings("deprecation")
+	//@SuppressWarnings("deprecation")
 	public void doSelfHeal(Player player) {
-		player.setHealth(player.getMaxHealth());
+		player.setHealth(player.getHealth() + 3);
 	}
 	
 	public void doJumpBoost(Player player) {

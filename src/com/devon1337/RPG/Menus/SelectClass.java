@@ -62,11 +62,13 @@ public class SelectClass implements InventoryHolder {
 				break;
 			case "Warrior":
 				if(!warrior.playerExists(player)) {
+					Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "lp user " + player.getName() + " parent set warrior");
 					warrior.addPlayer(player);
 				}
 				break;
 			case "Mage":
 				if(!mage.playerExists(player)) {
+					Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "lp user " + player.getName() + " parent set mage");
 					mage.addPlayer(player);
 				}
 				break;

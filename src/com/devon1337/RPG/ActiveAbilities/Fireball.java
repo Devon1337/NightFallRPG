@@ -85,16 +85,21 @@ public class Fireball {
 	
 	public void updateCooldowns() {
 		for(Map.Entry<Player, Integer> entry : pCooldowns.entrySet()) {
+			
 			System.out.println("Fireball: " + entry.getKey() + ": " + entry.getValue() + " seconds -> " + (entry.getValue()-1) + " seconds.");
-			pCooldowns.remove(entry.getKey());
-			pCooldowns.put(entry.getKey(), entry.getValue()-1);
+			//pCooldowns.remove(entry.getKey());
+			pCooldowns.replace(entry.getKey(), entry.getValue()-1);
+			//pCooldowns.put(entry.getKey(), entry.getValue()-1);
 			if(entry.getValue()-1 < 0) {
 				pCooldowns.remove(entry.getKey());
 			}
 			
+		    /*
 			if(entry.getValue() == COOLDOWN_AMOUNT-DURATION_AMOUNT) {
 				entry.getKey().setWalkSpeed(stats.getMoveSpeed(entry.getKey()));
 			}
+			*/
+			
 		}
 	}
 	
