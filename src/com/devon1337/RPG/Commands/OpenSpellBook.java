@@ -17,7 +17,7 @@ public class OpenSpellBook implements CommandExecutor {
 		// TODO Auto-generated method stub
 		spellbook.init_items(ClassManager.getTeam((Player) sender));
 		spellbook.openInventory((Player) sender);
-		return false;
+		return true;
 	}
 
 	

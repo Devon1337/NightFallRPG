@@ -8,6 +8,7 @@ import com.devon1337.RPG.Utils.Raycast.Exceptions.InvalidTarget;
 import com.devon1337.RPG.Utils.Raycast.Exceptions.ObjectsNotUsed;
 import com.devon1337.RPG.ActiveAbilities.ActiveAbilityManager;
 import com.devon1337.RPG.ActiveAbilities.Assassinate;
+import com.devon1337.RPG.ActiveAbilities.Blood_Shield;
 import com.devon1337.RPG.ActiveAbilities.Charge;
 import com.devon1337.RPG.ActiveAbilities.Confusion;
 import com.devon1337.RPG.ActiveAbilities.Fireball;
@@ -16,6 +17,7 @@ import com.devon1337.RPG.Classes.ClassManager;
 import com.devon1337.RPG.Classes.Rogue;
 import com.devon1337.RPG.Commands.CheckLevel;
 import com.devon1337.RPG.Commands.OpenSpellBook;
+import com.devon1337.RPG.Commands.Party;
 import com.devon1337.RPG.Commands.PickClass;
 import com.devon1337.RPG.Commands.Roll;
 import com.devon1337.RPG.Commands.SimulateSpell;
@@ -60,6 +62,7 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 	public Assassinate assassinate = new Assassinate();
 	public Confusion confusion = new Confusion();
 	public Fireball fireball = new Fireball();
+	public Blood_Shield bs = new Blood_Shield();
 	public ActiveAbilityManager aam = new ActiveAbilityManager();
 	public static DatabaseAccess dba = new DatabaseAccess();
 	public static Simulate sim;
@@ -80,6 +83,7 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		getCommand("spellbook").setExecutor(new OpenSpellBook());
 		getCommand("roll").setExecutor(new Roll());
 		getCommand("trade").setExecutor(new Trade());
+		getCommand("nfparty").setExecutor(new Party());
 	}
 
 	public void onDisable() {
@@ -161,6 +165,15 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 				fireball.use(player);
 			}
 			
+			if (item.getType() == Material.PINK_DYE) {
+				if (ClassManager.getTeam(player) == NFClasses.MAGE
+						&& !fireball.Exists(player)) {
+					aam.runFluidCasting(player);
+				}
+				
+				bs.use(player);
+			}
+			
 			if (item.getType() == Material.BLUE_DYE) {
 
 				sim = new Simulate(player, ProjectileType.ARROW);
@@ -239,6 +252,7 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		assassinate.updateCooldowns();
 		confusion.updateCooldowns();
 		fireball.updateCooldowns();
+		bs.updateCooldowns();
 	}
 
 	public static Plugin getPlugin() {
