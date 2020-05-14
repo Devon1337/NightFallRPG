@@ -1,6 +1,6 @@
 name: NightFallRPG
 main: com.devon1337.RPG.NightFallRPG
-version: 0.1.3.0282
+version: 0.1.4.0283
 api-version: 1.15
 author: Devon1337
 commands:
