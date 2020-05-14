@@ -15,7 +15,7 @@ public class Entanglement {
 
 	public final int COOLDOWN_AMOUNT = 10;
 	public final int DURATION_AMOUNT = 4;
-	public final int CLASS_TYPE = 0; // -- Mage
+	public final int CLASS_TYPE = 0; // -- Druid
 	public final Material ITEM = Material.BROWN_DYE;
 	public final Material CD_ITEM = Material.DIAMOND_SHOVEL;
 

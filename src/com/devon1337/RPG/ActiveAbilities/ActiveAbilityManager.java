@@ -30,6 +30,8 @@ public class ActiveAbilityManager {
 	public Wrath wrath = new Wrath();
 	public Entanglement entanglement = new Entanglement();
 	public Blood_Shield bs = new Blood_Shield();
+	public Shield_Slam ss = new Shield_Slam();
+	public Rejuvenate reju = new Rejuvenate();
 	
 	public int getCooldownTime(NFAbilities active, Player player) {
 		switch(active) {
@@ -95,6 +97,10 @@ public class ActiveAbilityManager {
 		abilityItems.put(NFAbilities.ENTANGLEMENT, entanglement.ITEM);
 		activeAbilities.put(NFAbilities.BLOOD_SHIELD, bs.CLASS_TYPE);
 		abilityItems.put(NFAbilities.BLOOD_SHIELD, bs.ITEM);
+		activeAbilities.put(NFAbilities.SHIELD_SLAM, ss.CLASS_TYPE);
+		abilityItems.put(NFAbilities.SHIELD_SLAM, ss.ITEM);
+		activeAbilities.put(NFAbilities.REJUVENATE, reju.CLASS_TYPE);
+		abilityItems.put(NFAbilities.REJUVENATE, reju.ITEM);
 	}
 	
 	public static ArrayList<NFAbilities> getClassSpells(NFClasses pClass) {

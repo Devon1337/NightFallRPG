@@ -12,6 +12,8 @@ import com.devon1337.RPG.ActiveAbilities.Blood_Shield;
 import com.devon1337.RPG.ActiveAbilities.Charge;
 import com.devon1337.RPG.ActiveAbilities.Confusion;
 import com.devon1337.RPG.ActiveAbilities.Fireball;
+import com.devon1337.RPG.ActiveAbilities.Rejuvenate;
+import com.devon1337.RPG.ActiveAbilities.Shield_Slam;
 import com.devon1337.RPG.ActiveAbilities.Vanish;
 import com.devon1337.RPG.Classes.ClassManager;
 import com.devon1337.RPG.Classes.Rogue;
@@ -63,6 +65,8 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 	public Confusion confusion = new Confusion();
 	public Fireball fireball = new Fireball();
 	public Blood_Shield bs = new Blood_Shield();
+	public Shield_Slam ss = new Shield_Slam();
+	public Rejuvenate reju = new Rejuvenate();
 	public ActiveAbilityManager aam = new ActiveAbilityManager();
 	public static DatabaseAccess dba = new DatabaseAccess();
 	public static Simulate sim;
@@ -155,6 +159,12 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 				@SuppressWarnings("unused")
 				Simulate raycast = new Simulate(player, ProjectileType.FIREBALL);
 			}
+			
+			if (item.getType() == Material.YELLOW_DYE) {
+				
+				ss.use(player);
+				
+			}
 
 			if (item.getType() == Material.RED_DYE) {
 				if (ClassManager.getTeam(player) == NFClasses.MAGE
@@ -219,11 +229,15 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		if (event.getEntity() instanceof Player && event.getDamager() instanceof Player) {
 			Player target = (Player) event.getEntity();
 			Player player = (Player) event.getDamager();
-			player.sendMessage("Target: " + target.getName());
-			player.sendMessage("HitWithItem: " + player.getInventory().getItemInMainHand().getType());
 			if (player.getInventory().getItemInMainHand().hasItemMeta()) {
 				if (player.getInventory().getItemInMainHand().getType().equals(Material.DIAMOND_HOE)) {
 					assassinate.use(player, target);
+					event.setCancelled(true);
+				}
+				
+				if (player.getInventory().getItemInMainHand().getType().equals(Material.PURPLE_DYE)) {
+					reju.use(player, target);
+					event.setCancelled(true);
 				}
 			}
 
@@ -253,6 +267,8 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		confusion.updateCooldowns();
 		fireball.updateCooldowns();
 		bs.updateCooldowns();
+		ss.updateCooldowns();
+		reju.updateCooldowns();
 	}
 
 	public static Plugin getPlugin() {
