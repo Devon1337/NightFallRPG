@@ -20,7 +20,7 @@ import com.devon1337.RPG.Utils.InventoryAssistant;
 
 public class SpellBook implements InventoryHolder {
 
-	private final Inventory spellBook;
+	private  Inventory spellBook;
 	public final String TITLE = ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Spell Book";
 	public PlayerUtils Putils = new PlayerUtils();
 	public InventoryAssistant utils = new InventoryAssistant();
@@ -36,10 +36,11 @@ public class SpellBook implements InventoryHolder {
 		ArrayList<NFAbilities> abilities = ActiveAbilityManager.getClassSpells(classes);
 		
 		for(int i = 0; i < abilities.size(); i++) {
-			spellBook.setItem(2*(i), createGuiItem(ActiveAbilityManager.getAbilitiesItem(abilities.get(i)), 1, ChatColor.GREEN + "" + abilities.get(i), "Will add description value later"));
+			spellBook.setItem(2*(i), createGuiItem(ActiveAbilityManager.getAbilitiesItem(abilities.get(i)), 1, ChatColor.GREEN + "" + abilities.get(i), "dont-hide"));
 		}
 		
 		spellBook.setItem(18, createGuiItem(Material.LEGACY_BOOK_AND_QUILL, 1, "Edit Spells"));
+		
 	}
 	
 	public void assignSpells(Player player, int slot, NFClasses classes) {
@@ -48,14 +49,16 @@ public class SpellBook implements InventoryHolder {
 		
 		
 		
-		player.getInventory().setItem(slot, createGuiItem(Material.BARRIER, 1, "Spell Slot 1"));
-		player.getInventory().setItem(slot, createGuiItem(Material.BARRIER, 1, "Spell Slot 2"));
-		player.getInventory().setItem(slot, createGuiItem(Material.BARRIER, 1, "Spell Slot 3"));
+		player.getInventory().setItem(slot, createGuiItem(Material.BARRIER, 1, "Spell Slot 1", "dont-hide"));
+		player.getInventory().setItem(slot, createGuiItem(Material.BARRIER, 1, "Spell Slot 2", "dont-hide"));
+		player.getInventory().setItem(slot, createGuiItem(Material.BARRIER, 1, "Spell Slot 3", "dont-hide"));
 	}
 	
 	public ItemStack createGuiItem(Material material, int amount, String name, String... lore) {
 		ItemStack item = new ItemStack(material, amount);
+		
 		ItemMeta meta = item.getItemMeta();
+		
 		meta.setDisplayName(name);
 		ArrayList<String> metalore = new ArrayList<String>();
 

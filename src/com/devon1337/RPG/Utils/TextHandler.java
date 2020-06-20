@@ -11,7 +11,7 @@ public class TextHandler {
 
 	public void sendNewClickEvent(Player player, String cmd, String messages) {
 		
-		
+			
 			IChatBaseComponent comp = ChatSerializer
 					.a("{\"text\":\"" + "\",\"extra\":[{\"text\":\"" + messages + "\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"" + cmd + "\"}}]}");
 			PacketPlayOutChat packet = new PacketPlayOutChat(comp);

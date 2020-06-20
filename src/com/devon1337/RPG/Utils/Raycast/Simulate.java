@@ -285,6 +285,10 @@ public class Simulate {
 					"Exception: ObjectsNotUsed -- You attempted to read for an object that does not yet exist!");
 		}
 	}
+	
+	//private void forceClip(ProjectileType projectile) { Added to IRaycast
+		
+	//}
 
 	private void clippingTimer(Plugin plugin, ProjectileType projectile) throws BadProjectile, ObjectsNotUsed {
 		BukkitScheduler scheduler = plugin.getServer().getScheduler();
@@ -293,7 +297,7 @@ public class Simulate {
 
 			@Override
 			public void run() {
-				// System.out.println("Running!");
+				//RaycastCompleteEvent e = new RaycastCompleteEvent(); Added to IRaycast
 				switch (projectile) {
 				case ARROW:
 					try {

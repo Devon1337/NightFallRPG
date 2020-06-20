@@ -60,17 +60,19 @@ public class Entanglement {
 	}
 
 	public void updateCooldowns() {
+
 		for (Map.Entry<Player, Integer> entry : pCooldowns.entrySet()) {
+
 			System.out.println("Entanglement: " + entry.getKey() + ": " + entry.getValue() + " seconds -> "
 					+ (entry.getValue() - 1) + " seconds.");
-			pCooldowns.remove(entry.getKey());
 			pCooldowns.put(entry.getKey(), entry.getValue() - 1);
-			if (entry.getValue() - 1 < 0) {
-				pCooldowns.remove(entry.getKey());
-			}
 
 			if (entry.getValue() == COOLDOWN_AMOUNT - DURATION_AMOUNT) {
 				entry.getKey().setWalkSpeed(stats.getMoveSpeed(entry.getKey()));
+			}
+
+			if (entry.getValue() - 1 < 0) {
+				pCooldowns.remove(entry.getKey());
 			}
 		}
 	}
@@ -80,7 +82,7 @@ public class Entanglement {
 			System.out.println("Entanglement Stun: " + entry.getKey() + ": " + entry.getValue() + " seconds -> "
 					+ (entry.getValue() - 1) + " seconds.");
 			pStun.replace(entry.getKey(), entry.getValue() - 1);
-			if(entry.getValue() < 0) {
+			if (entry.getValue() < 0) {
 				pStun.remove(entry.getKey());
 				entry.getKey().setWalkSpeed(pOSpeed.get(entry.getKey()));
 			}

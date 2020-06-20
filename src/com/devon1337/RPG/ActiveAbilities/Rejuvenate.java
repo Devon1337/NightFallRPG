@@ -21,23 +21,23 @@ public class Rejuvenate {
 		if (!pCooldowns.containsKey(player)) {
 			pCooldowns.put(player, COOLDOWN_AMOUNT);
 
-			target.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 20*5, 1));
+			target.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 20 * 5, 1));
 			target.sendMessage("You are being healed by " + player.getName() + "!");
 
-		}else{
+		} else {
 			player.sendMessage(ChatColor.DARK_RED + "Rejuvenate has " + pCooldowns.get(player) + " seconds left!");
 		}
-		
-		
-	
+
 	}
 
 	public void updateCooldowns() {
+
 		for (Map.Entry<Player, Integer> entry : pCooldowns.entrySet()) {
+
 			System.out.println("Rejuvenate: " + entry.getKey() + ": " + entry.getValue() + " seconds -> "
 					+ (entry.getValue() - 1) + " seconds.");
-			pCooldowns.remove(entry.getKey());
 			pCooldowns.put(entry.getKey(), entry.getValue() - 1);
+
 			if (entry.getValue() - 1 < 0) {
 				pCooldowns.remove(entry.getKey());
 			}

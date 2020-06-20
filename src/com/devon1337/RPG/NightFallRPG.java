@@ -1,27 +1,44 @@
 package com.devon1337.RPG;
 
 import com.devon1337.RPG.Player.*;
+import com.devon1337.RPG.Quests.NavigationQuest;
+import com.devon1337.RPG.Quests.PVPQuest;
+import com.devon1337.RPG.Quests.Quest;
+import com.devon1337.RPG.Quests.QuestTracker;
+import com.devon1337.RPG.Quests.TestQuest;
+import com.devon1337.RPG.Quests.Exceptions.QuestIDInUse;
+import com.devon1337.RPG.Utils.AnimationController;
+import com.devon1337.RPG.Utils.DialogueSystem;
+import com.devon1337.RPG.Utils.FriendsList;
 import com.devon1337.RPG.Utils.Raycast.ProjectileType;
 import com.devon1337.RPG.Utils.Raycast.Simulate;
 import com.devon1337.RPG.Utils.Raycast.Exceptions.BadProjectile;
 import com.devon1337.RPG.Utils.Raycast.Exceptions.InvalidTarget;
 import com.devon1337.RPG.Utils.Raycast.Exceptions.ObjectsNotUsed;
+
+import net.raidstone.wgevents.events.RegionEnteredEvent;
+
 import com.devon1337.RPG.ActiveAbilities.ActiveAbilityManager;
 import com.devon1337.RPG.ActiveAbilities.Assassinate;
 import com.devon1337.RPG.ActiveAbilities.Blood_Shield;
 import com.devon1337.RPG.ActiveAbilities.Charge;
 import com.devon1337.RPG.ActiveAbilities.Confusion;
+import com.devon1337.RPG.ActiveAbilities.Entanglement;
 import com.devon1337.RPG.ActiveAbilities.Fireball;
 import com.devon1337.RPG.ActiveAbilities.Rejuvenate;
 import com.devon1337.RPG.ActiveAbilities.Shield_Slam;
 import com.devon1337.RPG.ActiveAbilities.Vanish;
+import com.devon1337.RPG.ActiveAbilities.Wrath;
 import com.devon1337.RPG.Classes.ClassManager;
 import com.devon1337.RPG.Classes.Rogue;
 import com.devon1337.RPG.Commands.CheckLevel;
+import com.devon1337.RPG.Commands.FLCommand;
+import com.devon1337.RPG.Commands.NFQuest;
 import com.devon1337.RPG.Commands.OpenSpellBook;
 import com.devon1337.RPG.Commands.Party;
 import com.devon1337.RPG.Commands.PickClass;
 import com.devon1337.RPG.Commands.Roll;
+import com.devon1337.RPG.Commands.RunDialog;
 import com.devon1337.RPG.Commands.SimulateSpell;
 import com.devon1337.RPG.Commands.Trade;
 import com.devon1337.RPG.Menus.*;
@@ -30,33 +47,48 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
+@SuppressWarnings("deprecation")
 public class NightFallRPG extends JavaPlugin implements Listener {
 
 	public static PlayerUtils Putils = new PlayerUtils();
 	public static SelectClass selClass = new SelectClass();
+	
 	public static Rogue rogue = new Rogue();
 
 	public Vanish vanish = new Vanish();
@@ -67,19 +99,31 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 	public Blood_Shield bs = new Blood_Shield();
 	public Shield_Slam ss = new Shield_Slam();
 	public Rejuvenate reju = new Rejuvenate();
+	public Entanglement et = new Entanglement();
+	public Wrath wr = new Wrath();
 	public ActiveAbilityManager aam = new ActiveAbilityManager();
+	public static QuestTracker qt = new QuestTracker();
 	public static DatabaseAccess dba = new DatabaseAccess();
 	public static Simulate sim;
-	
+
 	public BukkitScheduler scheduler = getServer().getScheduler();
 
 	public static Scanner input = new Scanner(System.in);
 
 	public void onEnable() {
+		
+		
 		aam.init_abilities();
-
+		DialogueSystem.init_dialog();
 		gameplayScheduler(this);
-
+		try {
+			qt.initQuest(new Quest(TestQuest.getQuestID(), TestQuest.getTitle(), TestQuest.getDescription(), TestQuest.getCode(), TestQuest.getResponses(), TestQuest.getXPAmount(), TestQuest.getGoldAmount(), null));
+			qt.initQuest(new Quest(NavigationQuest.getQuestID(), NavigationQuest.getTitle(), NavigationQuest.getDescription(), NavigationQuest.getCode(), NavigationQuest.getResponses(), NavigationQuest.getXPAmount(), NavigationQuest.getGoldAmount(), null));
+			qt.initQuest(new Quest(PVPQuest.getQuestID(), PVPQuest.getTitle(), PVPQuest.getDescription(), PVPQuest.getCode(), PVPQuest.getResponses(), PVPQuest.getXPAmount(), PVPQuest.getGoldAmount(), null));
+		} catch (QuestIDInUse e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		getServer().getPluginManager().registerEvents(this, this);
 		getCommand("class").setExecutor(new PickClass());
 		getCommand("simulate").setExecutor(new SimulateSpell());
@@ -88,6 +132,9 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		getCommand("roll").setExecutor(new Roll());
 		getCommand("trade").setExecutor(new Trade());
 		getCommand("nfparty").setExecutor(new Party());
+		getCommand("nfquest").setExecutor(new NFQuest());
+		getCommand("nfdialog").setExecutor(new RunDialog());
+		getCommand("fl").setExecutor(new FLCommand());
 	}
 
 	public void onDisable() {
@@ -111,8 +158,15 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
 		Player player = (Player) event.getWhoClicked();
-
-		if (event.getView().getTitle().equals(selClass.getTitle())) {
+		ArrayList<String> itemMeta = new ArrayList<String>();
+		itemMeta.add("dont-hide");
+		
+		if(event.getCurrentItem().getItemMeta().getLore().equals(itemMeta)) {
+			player.sendMessage("You cannot remove that!");
+			event.setCancelled(true);
+		}
+		
+		if (event.getView().getTitle().equals(selClass.getTitle(0))) {
 
 			selClass.inputResponse(event.getSlot(), player);
 
@@ -124,15 +178,95 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		}
 
 	}
+	
+	@EventHandler
+	public void onDeathEvent(PlayerDeathEvent event) {
+		if(event.getEntity().getKiller() instanceof Player && event.getEntity().getKiller() != null && QuestTracker.hasQuest(event.getEntity(), QuestTracker.grabQuest(3)) && QuestTracker.playersQuest(3, event.getEntity()).getStatus() != 2) {
+			PVPQuest.completeStep(0, event.getEntity().getKiller(), QuestTracker.playersQuest(3, event.getEntity().getKiller()));
+			QuestTracker.playersQuest(3, event.getEntity().getKiller()).setCurSteps(QuestTracker.playersQuest(3, event.getEntity().getKiller()).getCurSteps() + 1);
+		}
+	}
+	
+	@EventHandler
+	public void onDropEvent(PlayerDropItemEvent event) {
+		Player player = event.getPlayer();
+		ArrayList<String> itemMeta = new ArrayList<String>();
+		itemMeta.add("dont-hide");
+		
+		if(event.getItemDrop().getItemStack().getItemMeta().getLore().equals(itemMeta)) {
+			player.sendMessage("You cannot remove that!");
+			event.setCancelled(true);
+		}
+	}
 
-	@SuppressWarnings("deprecation")
+	@EventHandler
+	public void onInventoryMoveItemEvent(InventoryMoveItemEvent event) {
+		Player player = (Player) event.getInitiator().getViewers().get(0);
+		ArrayList<String> itemMeta = new ArrayList<String>();
+		itemMeta.add("dont-hide");
+		if(event.getItem().getItemMeta().getLore().equals(itemMeta)) {
+			player.sendMessage("You cannot remove that!");
+			event.setCancelled(true);
+		}
+		
+	}
+	
+	@EventHandler
+	public void onRegionEnter(RegionEnteredEvent e) {
+		Player player = e.getPlayer();
+
+		if (player instanceof Player) {
+			if (e.getRegionName().equals("dspawn_int")) {
+				player.sendTitle("Lundessal's Ancient Water", "", 10 * 1, 20 * 2, 10 * 1);
+				player.playSound(player.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1, 0.1f);
+			} else if(e.getRegionName().equals("rspawn")) {
+				player.sendTitle("Stonefall Abyss", "", 10 * 1, 20 * 2, 10 * 1);
+				player.playSound(player.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1, 0.1f);
+				if(QuestTracker.hasQuest(player, QuestTracker.grabQuest(2)) && QuestTracker.playersQuest(2, player).getCurSteps() == 0) {
+					NavigationQuest.completeStep(0, player, QuestTracker.playersQuest(2, player));
+					QuestTracker.playersQuest(2, player).setCurSteps(1);
+				}
+				
+			} else if(e.getRegionName().equals("mspawn")) {
+				player.sendTitle("Filandrean Jewel Precinct", "", 10 * 1, 20 * 2, 10 * 1);
+				player.playSound(player.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1, 0.1f);
+			} else if(e.getRegionName().equals("ganaboru")) {
+				if(!player.hasPermission("essentials.warps.ganaboru")) {
+					Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "lp user " + player.getName() + " permission set essentials.warps.ganaboru true");
+					player.sendMessage("A fast travel point has been added to your map!");
+				}
+				// int 1 - start fade timer
+				// int 2 - total time
+				// int 3 - end fade timer
+				player.sendTitle("Zuru'Ganaboru", "", 10 * 1, 20 * 2, 10 * 1);
+				player.playSound((Location) player.getWorld(), Sound.BLOCK_BEACON_ACTIVATE, 1, 0.1f);
+			}
+		}
+
+	}
+
 	public static OfflinePlayer getOfflinePlayer(String username) {
 		return Bukkit.getOfflinePlayer(username);
 	}
 
 	@EventHandler
+	public void onPlayerQuit(PlayerQuitEvent event) {
+		event.setQuitMessage("");
+		FriendsList.goOffline(event.getPlayer());
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerLeave(PlayerKickEvent event) {
+		event.setLeaveMessage("");
+		FriendsList.goOffline(event.getPlayer());
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		// Player player = event.getPlayer();
+		event.setJoinMessage("");
+		FriendsList.goOnline(event.getPlayer());
+		
 		if (!PlayerLevel.exists(event.getPlayer())) {
 			PlayerLevel.setLevel(event.getPlayer(), 1);
 			PlayerLevel.setXP(event.getPlayer(), 0);
@@ -149,53 +283,98 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		Player player = event.getPlayer();
 		ItemStack item = player.getInventory().getItemInMainHand();
 
-		if (event.getAction() == Action.RIGHT_CLICK_AIR) {
+		if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+
+			if (item.getType() == Material.PHANTOM_MEMBRANE) {
+				vanish.use(player);
+			}
 
 			if (item.getType() == Material.ORANGE_DYE) {
 				charge.use(player);
 			}
-			
+
+			if (item.getType() == Material.BROWN_DYE) {
+				et.use(player, new Simulate(player, ProjectileType.ARROW));
+			}
+
+			if (item.getType() == Material.LIME_DYE) {
+				wr.use(player, new Simulate(player, ProjectileType.ARROW, 6));
+			}
+
 			if (item.getType() == Material.WHITE_DYE) {
 				@SuppressWarnings("unused")
 				Simulate raycast = new Simulate(player, ProjectileType.FIREBALL);
 			}
-			
+
 			if (item.getType() == Material.YELLOW_DYE) {
-				
+
 				ss.use(player);
-				
+
 			}
 
 			if (item.getType() == Material.RED_DYE) {
-				if (ClassManager.getTeam(player) == NFClasses.MAGE
-						&& !fireball.Exists(player)) {
+				if (ClassManager.getTeam(player) == NFClasses.MAGE && !fireball.Exists(player)) {
 					aam.runFluidCasting(player);
 				}
-				
+
 				fireball.use(player);
 			}
-			
+
 			if (item.getType() == Material.PINK_DYE) {
-				if (ClassManager.getTeam(player) == NFClasses.MAGE
-						&& !fireball.Exists(player)) {
+				if (ClassManager.getTeam(player) == NFClasses.MAGE && !fireball.Exists(player)) {
 					aam.runFluidCasting(player);
 				}
-				
+
 				bs.use(player);
 			}
-			
+
 			if (item.getType() == Material.BLUE_DYE) {
 
 				sim = new Simulate(player, ProjectileType.ARROW);
-				if (ClassManager.getTeam(player) == NFClasses.MAGE
-						&& !confusion.Exists(player)) {
+				if (ClassManager.getTeam(player) == NFClasses.MAGE && !confusion.Exists(player)) {
 					aam.runFluidCasting(player);
 				}
+
+				ArmorStand stand = player.getLocation().getWorld().spawn(player.getLocation(), ArmorStand.class);
+				stand.setVisible(false);
+				stand.setGravity(false);
+				stand.setArms(true);
+				stand.setCollidable(false);
+				stand.setInvulnerable(true);
+				stand.setItemInHand(new ItemStack(Material.DARK_OAK_LEAVES));
+
+				int animate = Bukkit.getScheduler().scheduleAsyncRepeatingTask(this,
+						new AnimationController(stand, player), 0, 1);
+
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						Bukkit.getScheduler().cancelTask(animate);
+						stand.remove();
+					}
+				}.runTaskLater(this, 100);
+
 				confusion.use(player, sim);
 			}
 		}
 	}
 
+	@EventHandler
+    public void onPlayerChat(AsyncPlayerChatEvent event) {
+		ArrayList<Player> recips = new ArrayList<Player>();
+		
+		for(Player player : event.getRecipients()) {
+			recips.add(player);
+		}
+		for(int i = 0; i < recips.size(); i++) {
+            if(DialogueSystem.hasDialog(recips.get(i))) {
+            		event.getRecipients().remove(recips.get(i));
+            }
+		}
+		
+		event.setCancelled(DialogueSystem.hasDialog(event.getPlayer()));
+    }
+	
 	@EventHandler
 	public void onProjectileHit(ProjectileHitEvent event) {
 		Player player = (Player) event.getEntity().getShooter();
@@ -203,7 +382,7 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		if (event.getEntity() instanceof Arrow) {
 
 			boolean raycast = event.getEntity().getMetadata("raycast").get(0).asBoolean();
-			
+
 			if (raycast) {
 				if (event.getHitEntity() instanceof Player) {
 					sim.setTarget((Player) event.getHitEntity());
@@ -212,14 +391,15 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 					if (sim != null) {
 						confusion.ability(player, sim);
 						try {
-							player.spawnParticle(Particle.EXPLOSION_NORMAL, sim.getTarget().getLocation(), 1, 0.0, 0.0, 0.5);
+							player.spawnParticle(Particle.EXPLOSION_NORMAL, sim.getTarget().getLocation(), 1, 0.0, 0.0,
+									0.5);
 						} catch (InvalidTarget e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
 				}
-				
+
 			}
 		}
 	}
@@ -234,7 +414,7 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 					assassinate.use(player, target);
 					event.setCancelled(true);
 				}
-				
+
 				if (player.getInventory().getItemInMainHand().getType().equals(Material.PURPLE_DYE)) {
 					reju.use(player, target);
 					event.setCancelled(true);
@@ -260,7 +440,17 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		}, 0L, 20L);
 	}
 
+	public void doGlobalLoop() {
+		//Logging.OutputToConsole(" --- Running Global Loop --- ");
+		@SuppressWarnings("unchecked")
+		List<Player> allPlayers = (List<Player>) Bukkit.getOnlinePlayers();
+		for(int i = 0; i < Bukkit.getOnlinePlayers().size(); i++) {
+			NFQuest.generateNewQuestBook(allPlayers.get(i));
+		}
+	}
+	
 	public void gameplayLoop() {
+		doGlobalLoop();
 		vanish.updateCooldowns();
 		charge.updateCooldowns();
 		assassinate.updateCooldowns();

@@ -22,7 +22,6 @@ public class SimulateSpell implements CommandExecutor {
 			return true;
 		}
 		
-		// TODO Auto-generated method stub
 		return false;
 	}
 	
