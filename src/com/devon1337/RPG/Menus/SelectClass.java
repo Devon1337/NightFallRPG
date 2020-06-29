@@ -65,6 +65,8 @@ public class SelectClass implements InventoryHolder {
 						}
 
 					}, 20 * 1);
+					
+					
 				
 				rogue.addPlayer(player);
 				}
@@ -95,6 +97,63 @@ public class SelectClass implements InventoryHolder {
 
 					}, 20 * 1);
 					warrior.addPlayer(player);
+					
+					scheduler.scheduleSyncDelayedTask(NightFallRPG.getPlugin(), new Runnable() {
+
+						@Override
+						public void run() {
+							Bukkit.getServer().dispatchCommand(player, "cam load warriorEntrance1");
+						}
+
+					}, 20 * 3);
+					
+					scheduler.scheduleSyncDelayedTask(NightFallRPG.getPlugin(), new Runnable() {
+
+						@Override
+						public void run() {
+							Bukkit.getServer().dispatchCommand(player, "cam play");
+						}
+
+					}, 20 * 4);
+					
+					
+					
+					scheduler.scheduleSyncDelayedTask(NightFallRPG.getPlugin(), new Runnable() {
+
+						@Override
+						public void run() {
+							Bukkit.getServer().dispatchCommand(player, "cam load warriorEntrance2");
+						}
+
+					}, 20 * 9);
+					
+					scheduler.scheduleSyncDelayedTask(NightFallRPG.getPlugin(), new Runnable() {
+
+						@Override
+						public void run() {
+							Bukkit.getServer().dispatchCommand(player, "cam play");
+						}
+
+					}, 20 * 10);
+					
+					scheduler.scheduleSyncDelayedTask(NightFallRPG.getPlugin(), new Runnable() {
+
+						@Override
+						public void run() {
+							Bukkit.getServer().dispatchCommand(player, "cam load warriorEntrance3");
+						}
+
+					}, 20 * 18);
+					
+					scheduler.scheduleSyncDelayedTask(NightFallRPG.getPlugin(), new Runnable() {
+
+						@Override
+						public void run() {
+							Bukkit.getServer().dispatchCommand(player, "cam play");
+						}
+
+					}, 20 * 19);
+					
 				}
 				break;
 			case "Mage":
