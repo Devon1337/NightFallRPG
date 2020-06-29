@@ -2,14 +2,22 @@ package com.devon1337.RPG.Quests;
 
 import org.bukkit.entity.Player;
 
-public class PVPQuest {
+import com.devon1337.RPG.Quests.Exceptions.QuestIDInUse;
+
+public class PVPQuest extends Quest {
 	
+	public PVPQuest(int QuestID, String Title, String Description, String Code, String[] Responses, int XP_Amount,
+			int Gold_Amount, Player player, int Status, int StepAmount) throws QuestIDInUse {
+		super(QuestID, Title, Description, Code, Responses, XP_Amount, Gold_Amount, player, Status, StepAmount);
+		// TODO Auto-generated constructor stub
+	}
+
 	public final int STEP_AMOUNT = 5;
 	public final static String TITLE = "Clearing the Spider's Nest", DESCRIPTION = "Slay 5 players in PVP", CODE = "WARRIOR_QUEST_1";
 	public final static String[] RESPONSES = {"Test A", "Test B", "Test C", "Test D"};
 	public final static int QUESTID = 3, XP_Amount = 100, Gold_Amount = 100;
 	
-	public static String getTitle() {
+	public String getTitle() {
 		return TITLE;
 	}
 	
@@ -17,7 +25,7 @@ public class PVPQuest {
 		return DESCRIPTION;
 	}
 	
-	public static String getCode() {
+	public String getCode() {
 		return CODE;
 	}
 	

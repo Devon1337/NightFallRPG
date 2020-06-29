@@ -2,17 +2,19 @@ package com.devon1337.RPG.Quests;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import com.devon1337.RPG.Commands.NFQuest;
+import com.devon1337.RPG.Debugging.Logging;
 import com.devon1337.RPG.Quests.Exceptions.QuestIDInUse;
 
 public class QuestTracker {
 
-	public static HashMap<Player, ArrayList<Quest>> questList = new HashMap<Player, ArrayList<Quest>>();
+	public static HashMap<UUID, ArrayList<Quest>> questList = new HashMap<UUID, ArrayList<Quest>>();
 	public static ArrayList<Quest> GLOBAL_QUEST_LIST = new ArrayList<Quest>();
 	
 
@@ -28,9 +30,9 @@ public class QuestTracker {
 			
 			
 			if (getQuests(player) == null) {
-				questList.put(player, fixAL(new ArrayList<Quest>(), quest));
+				questList.put(player.getUniqueId(), fixAL(new ArrayList<Quest>(), quest));
 			} else {
-				questList.put(player, fixAL(getQuests(player), quest));
+				questList.put(player.getUniqueId(), fixAL(getQuests(player), quest));
 			}
 
 			System.out.println("Player: " + player.getName() + " has accepted questID: " + quest.QuestID);
@@ -67,8 +69,8 @@ public class QuestTracker {
 	}
 	
 	public static boolean hasQuestID(int ID, Player player) {
-		for(int i = 0; i < questList.get(player).size(); i++) {
-			if(questList.get(player).get(i).QuestID == ID) {
+		for(int i = 0; i < questList.get(player.getUniqueId()).size(); i++) {
+			if(questList.get(player.getUniqueId()).get(i).QuestID == ID) {
 				return true;
 			}
 		}
@@ -76,16 +78,18 @@ public class QuestTracker {
 	}
 	
 	public static Quest playersQuest(int ID, Player player) {
-		for(int i = 0; i < questList.get(player).size(); i++) {
-			if(questList.get(player).get(i).QuestID == ID) {
-				return questList.get(player).get(i);
+		for(int i = 0; i < questList.get(player.getUniqueId()).size(); i++) {
+			if(questList.get(player.getUniqueId()).get(i).QuestID == ID) {
+				return questList.get(player.getUniqueId()).get(i);
+			} else {
+				Logging.OutputToConsole("Player Quest: " + questList.get(player.getUniqueId()));
 			}
 		}
 		return null;
 	}
 
 	public static boolean hasQuest(Player player, Quest quest) {
-		if (questList.containsKey(player) && hasQuestID(quest.QuestID, player)) {
+		if (questList.containsKey(player.getUniqueId()) && hasQuestID(quest.QuestID, player)) {
 			return true;
 		}
 		return false;
@@ -97,16 +101,16 @@ public class QuestTracker {
 	}
 
 	public static ArrayList<Quest> getQuests(Player player) {
-		return questList.get(player);
+		return questList.get(player.getUniqueId());
 	}
 
-	public void initQuest(Quest quest) throws QuestIDInUse {
+	public static void initQuest(Quest quest) throws QuestIDInUse {
 
 		if (GLOBAL_QUEST_LIST.contains(quest)) {
 			throw new QuestIDInUse(
 					"NFRPG Exception: The QuestID: " + quest.QuestID + " is already in use! please reassign the ID.");
 		} else {
-			System.out.println(quest.Title + " has been initialized!");
+			Logging.OutputToConsole("Quest Stats: Name: " + quest.Title + " ID: " + quest.Code + " Step 1: " + quest.getStep(0));
 			GLOBAL_QUEST_LIST.add(quest);
 		}
 	}

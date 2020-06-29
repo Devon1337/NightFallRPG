@@ -5,8 +5,9 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import com.devon1337.RPG.Commands.NFQuest;
+import com.devon1337.RPG.Quests.Exceptions.QuestIDInUse;
 
-public class Quest {
+public abstract class Quest {
 
 	/* Status Codes
 	 * 0 - Available
@@ -15,21 +16,21 @@ public class Quest {
 	 * 3 - Failed
 	 */
 	
-	public final int MAX_RESPONSES = 4;
 	public Player player;
 	public int Status, QuestID, XP_Amount, Gold_Amount, CurSteps = 0, StepAmount = 5;
 	public String Title, Description, Code;
-	public String[] Responses = new String[MAX_RESPONSES];
+	public String[] Steps;
 	
-	public Quest(int QuestID, String Title, String Description, String Code, String[] Responses, int XP_Amount, int Gold_Amount, Player player) {
+	public Quest(int QuestID, String Title, String Description, String Code, String[] Steps, int XP_Amount, int Gold_Amount, Player player, int Status, int StepAmount) throws QuestIDInUse {
 		this.QuestID = QuestID;
 		this.Title = Title;
 		this.Description = Description;
 		this.Code = Code;
-		this.Responses = Responses;
+		this.Steps = Steps;
 		this.XP_Amount = XP_Amount;
 		this.Gold_Amount = Gold_Amount;
 		this.player = player;
+		QuestTracker.initQuest(this);
 	}
 	
 	public Quest(Quest quest, Player player, int Status, int StepAmount) {
@@ -37,12 +38,20 @@ public class Quest {
 		Title = quest.Title;
 		Description = quest.Description;
 		Code = quest.Code;
-		this.Responses = quest.Responses;
+		this.Steps = quest.Steps;
 		this.XP_Amount = quest.XP_Amount;
 		this.Gold_Amount = quest.Gold_Amount;
 		this.player = player;
 		this.Status = Status;
 		this.StepAmount = StepAmount;
+	}
+	
+	public String getStep(int index) {
+			if(index < Steps.length) {
+				return Steps[index];
+			}
+			
+			return "";
 	}
 	
 	public String getCode() {
@@ -77,7 +86,8 @@ public class Quest {
 	}
 	
 	public void setStatus(int Status) {
-		if(Status == 2) {
+		
+		if(Status == 2) {			
 			player.sendMessage(ChatColor.LIGHT_PURPLE + "Quest Complete: " + ChatColor.GOLD + ChatColor.BOLD + Title);
 			player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
 			NFQuest.addPlayer(player);
