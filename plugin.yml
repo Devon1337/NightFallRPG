@@ -1,6 +1,6 @@
 name: NightFallRPG
 main: com.devon1337.RPG.NightFallRPG
-version: 0.1.9.0293
+version: 0.2.1.0301
 api-version: 1.15
 author: Devon1337
 commands:
@@ -32,5 +32,11 @@ commands:
       description: Trade window.
       usage: /<command>
    fl:
+      description: Trade window.
+      usage: /<command>
+   nftest:
+      description: Trade window.
+      usage: /<command>
+   nfprint:
       description: Trade window.
       usage: /<command>
