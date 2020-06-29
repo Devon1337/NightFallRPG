@@ -12,18 +12,29 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 
-import com.devon1337.RPG.Quests.Quest;
+import com.devon1337.RPG.Debugging.Logging;
 import com.devon1337.RPG.Quests.QuestTracker;
+import com.devon1337.RPG.Utils.DialogueSystem;
 
 public class NFQuest implements CommandExecutor {
 
 	QuestTracker qt = new QuestTracker();
 	public static ArrayList<Player> qbUpdate = new ArrayList<Player>();
 
+	/* 
+	 * int QuestID, String Title, String Description, String Code, String[] Responses,
+			int XP_Amount, int Gold_Amount, Player player
+	 * 
+	 * 
+	 * 
+	 */
+	
+	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String arg2, String[] arg3) {
 		// TODO Auto-generated method stub
 		Player player = null;
+		
 		if (sender instanceof Player) {
 			player = (Player) sender;
 			if (arg3.length == 1) {
@@ -34,17 +45,22 @@ public class NFQuest implements CommandExecutor {
 			player = Bukkit.getPlayerExact(arg3[1]);
 		}
 
+		
+		//Logging.OutputToConsole("Name: " + player);
+		
 		if (arg3.length == 1 && !QuestTracker.hasQuest(player, QuestTracker.grabQuest(Integer.parseInt(arg3[0])))
 				&& player != null && !arg3[0].equalsIgnoreCase("confirm")) {
-
-			qt.addQuest(player, new Quest(QuestTracker.grabQuest(Integer.parseInt(arg3[0])), player, 1,
-					QuestTracker.grabQuest(Integer.parseInt(arg3[0])).getStepAmount()));
+			
+			qt.addQuest(player, QuestTracker.grabQuest(Integer.parseInt(arg3[0])));
 			return true;
 		} else if (arg3.length == 2 && player != null
 				&& !QuestTracker.hasQuest(player, QuestTracker.grabQuest(Integer.parseInt(arg3[0])))) {
-			qt.addQuest(player,
-					new Quest(QuestTracker.grabQuest(Integer.parseInt(arg3[0])), Bukkit.getPlayerExact(arg3[1]), 1,
-							QuestTracker.grabQuest(Integer.parseInt(arg3[0])).getStepAmount()));
+			if(DialogueSystem.hasDialog(player)) {
+				DialogueSystem.removeDialog(player);
+				qt.addQuest(player, QuestTracker.grabQuest(Integer.parseInt(arg3[0])));
+			} else {
+				player.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.ITALIC + "You had waited too long...");
+			}
 			return true;
 		} else if (arg3.length == 2 && player == null
 				&& !QuestTracker.hasQuest(player, QuestTracker.grabQuest(Integer.parseInt(arg3[0])))) {
@@ -66,9 +82,9 @@ public class NFQuest implements CommandExecutor {
 
 	public static void generateNewQuestBook(Player player) {
 		//player.getInventory().setItem(3, new ItemStack(Material.AIR));
-		if(qbUpdate.contains(player)) {
-		player.getInventory().setItem(2, createQuestBook(player));
-		qbUpdate.remove(player);
+		if (qbUpdate.contains(player)) {
+			player.getInventory().setItem(2, createQuestBook(player));
+			qbUpdate.remove(player);
 		}
 	}
 
@@ -83,10 +99,26 @@ public class NFQuest implements CommandExecutor {
 		ArrayList<String> pages = new ArrayList<String>();
 
 		for (int i = 0; i < QuestTracker.getQuests(player).size(); i++) {
+			String message = "\n\n";
+			for (int j = 0; j < QuestTracker.getQuests(player).size(); j++) { 
+				if(QuestTracker.getQuests(player).get(i).CurSteps > i || QuestTracker.getQuests(player).get(i).getStatus() == 1) {
+					
+					
+					message = message + ChatColor.GRAY + QuestTracker.getQuests(player).get(i).getStep(j) + "\n";
+				} else if (QuestTracker.getQuests(player).get(i).CurSteps > i) {
+					message = message + ChatColor.LIGHT_PURPLE + QuestTracker.getQuests(player).get(i).getStep(j) + "\n";
+				}
+			}
+			
+			Logging.OutputToConsole("Current Message: " + message);
+			
 			if (QuestTracker.getQuests(player).get(i).Status == 1) {
 				pages.add(ChatColor.GOLD + QuestTracker.getQuests(player).get(i).getTitle() + "\n\n"
-						+ ChatColor.DARK_PURPLE + QuestTracker.getQuests(player).get(i).Description);
+						+ ChatColor.DARK_PURPLE + QuestTracker.getQuests(player).get(i).Description + message);
 			}
+			
+			
+			
 		}
 
 		for (int i = 0; i < QuestTracker.getQuests(player).size(); i++) {
@@ -94,7 +126,16 @@ public class NFQuest implements CommandExecutor {
 				pages.add(ChatColor.GRAY + QuestTracker.getQuests(player).get(i).getTitle() + "\n\n" + ChatColor.GRAY
 						+ QuestTracker.getQuests(player).get(i).Description);
 			}
+			
+			for (int j = 0; j < QuestTracker.getQuests(player).size(); j++) { 
+				if(QuestTracker.getQuests(player).get(i).CurSteps > j) {
+					
+				}
+			}
+			
 		}
+		
+		
 
 		ArrayList<String> tx = new ArrayList<String>();
 		tx.add("dont-hide");

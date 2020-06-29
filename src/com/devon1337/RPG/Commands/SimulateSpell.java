@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 
 import com.devon1337.RPG.ActiveAbilities.Charge;
 import com.devon1337.RPG.ActiveAbilities.Vanish;
+import com.devon1337.RPG.Utils.Cinematic;
 
 public class SimulateSpell implements CommandExecutor {
 
@@ -28,6 +29,8 @@ public class SimulateSpell implements CommandExecutor {
 	public void inputResponse(String message, Player player) {
 		switch(message) {
 		case "vanish": 
+			Cinematic.loadPaths();
+			
 			vanish.use(player);
 			break;
 		case "charge":
