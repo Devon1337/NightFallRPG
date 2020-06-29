@@ -3,9 +3,7 @@ package com.devon1337.RPG;
 import com.devon1337.RPG.Player.*;
 import com.devon1337.RPG.Quests.NavigationQuest;
 import com.devon1337.RPG.Quests.PVPQuest;
-import com.devon1337.RPG.Quests.Quest;
 import com.devon1337.RPG.Quests.QuestTracker;
-import com.devon1337.RPG.Quests.TestQuest;
 import com.devon1337.RPG.Quests.Exceptions.QuestIDInUse;
 import com.devon1337.RPG.Utils.AnimationController;
 import com.devon1337.RPG.Utils.DialogueSystem;
@@ -33,7 +31,9 @@ import com.devon1337.RPG.Classes.ClassManager;
 import com.devon1337.RPG.Classes.Rogue;
 import com.devon1337.RPG.Commands.CheckLevel;
 import com.devon1337.RPG.Commands.FLCommand;
+import com.devon1337.RPG.Commands.NFPrint;
 import com.devon1337.RPG.Commands.NFQuest;
+import com.devon1337.RPG.Commands.NFTest;
 import com.devon1337.RPG.Commands.OpenSpellBook;
 import com.devon1337.RPG.Commands.Party;
 import com.devon1337.RPG.Commands.PickClass;
@@ -42,6 +42,9 @@ import com.devon1337.RPG.Commands.RunDialog;
 import com.devon1337.RPG.Commands.SimulateSpell;
 import com.devon1337.RPG.Commands.Trade;
 import com.devon1337.RPG.Menus.*;
+import com.devon1337.RPG.NPC.Faction;
+import com.devon1337.RPG.NPC.NPC;
+import com.devon1337.RPG.NPC.WorldController;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -112,18 +115,68 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 
 	public void onEnable() {
 		
+		// Factions | Note: Reputation Base Values are from the perspective of the faction and not the perspective of the player;
+		WorldController.initializeFaction(new Faction("faction_mages", "mages", 1000, -1000, -100, -400, 200));
+		WorldController.initializeFaction(new Faction("faction_warriors", "warriors", -100, 300, 1000, 0, -1000));
+		WorldController.initializeFaction(new Faction("faction_druids", "druids", -1000, 1000, 100, 500, -800));
+		WorldController.initializeFaction(new Faction("faction_rogues", "rogues", 0, 200, -100, 500, -400));
 		
-		aam.init_abilities();
-		DialogueSystem.init_dialog();
-		gameplayScheduler(this);
+		
+		// NPCS
+		// Rogues
+		WorldController.initializeNPC(new NPC("Rogue_Exit_1", "temp_name"), WorldController.getFaction("faction_rogues"));
+		WorldController.initializeNPC(new NPC("Rogue_Entrance_1", "temp_name"), WorldController.getFaction("faction_rogues"));
+		WorldController.initializeNPC(new NPC("Rogue_Entrance_2", "temp_name"), WorldController.getFaction("faction_rogues"));
+		WorldController.initializeNPC(new NPC("Rogue_Welcome_1", "temp_name"), WorldController.getFaction("faction_rogues"));
+		WorldController.initializeNPC(new NPC("Rogue_Crates_1", "temp_name"), WorldController.getFaction("faction_rogues"));
+		WorldController.initializeNPC(new NPC("Rogue_Citizen_1", "temp_name"), WorldController.getFaction("faction_rogues"));
+		WorldController.initializeNPC(new NPC("Rogue_Citizen_2", "temp_name"), WorldController.getFaction("faction_rogues"));
+		WorldController.initializeNPC(new NPC("Rogue_Citizen_3", "temp_name"), WorldController.getFaction("faction_rogues"));
+		WorldController.initializeNPC(new NPC("Rogue_Citizen_4", "temp_name"), WorldController.getFaction("faction_rogues"));
+		WorldController.initializeNPC(new NPC("Rogue_Citizen_5", "temp_name"), WorldController.getFaction("faction_rogues"));
+		WorldController.initializeNPC(new NPC("Rogue_Citizen_6", "temp_name"), WorldController.getFaction("faction_rogues"));
+		WorldController.initializeNPC(new NPC("Rogue_Citizen_7", "temp_name"), WorldController.getFaction("faction_rogues"));
+		WorldController.initializeNPC(new NPC("Rogue_Citizen_8", "temp_name"), WorldController.getFaction("faction_rogues"));
+		WorldController.initializeNPC(new NPC("Rogue_Citizen_9", "temp_name"), WorldController.getFaction("faction_rogues"));
+		WorldController.initializeNPC(new NPC("Rogue_Citizen_10", "temp_name"), WorldController.getFaction("faction_rogues"));
+		WorldController.initializeNPC(new NPC("Rogue_Citizen_11", "temp_name"), WorldController.getFaction("faction_rogues"));
+		WorldController.initializeNPC(new NPC("Rogue_Citizen_12", "temp_name"), WorldController.getFaction("faction_rogues"));
+		
+		// Warriors
+		WorldController.initializeNPC(new NPC("Warrior_Guard_1", "temp_name"), WorldController.getFaction("faction_warriors"));
+		WorldController.initializeNPC(new NPC("Warrior_Guard_2", "temp_name"), WorldController.getFaction("faction_warriors"));
+		WorldController.initializeNPC(new NPC("Warrior_Guard_3", "temp_name"), WorldController.getFaction("faction_warriors"));
+		WorldController.initializeNPC(new NPC("Warrior_Guard_4", "temp_name"), WorldController.getFaction("faction_warriors"));
+		WorldController.initializeNPC(new NPC("Warrior_Guard_5", "temp_name"), WorldController.getFaction("faction_warriors"));
+		WorldController.initializeNPC(new NPC("Warrior_Guard_6", "temp_name"), WorldController.getFaction("faction_warriors"));
+		WorldController.initializeNPC(new NPC("Warrior_Guard_1", "temp_name"), WorldController.getFaction("faction_warriors"));
+		WorldController.initializeNPC(new NPC("Warrior_Guard_7", "temp_name"), WorldController.getFaction("faction_warriors"));
+		WorldController.initializeNPC(new NPC("Warrior_Guard_8", "temp_name"), WorldController.getFaction("faction_warriors"));
+		WorldController.initializeNPC(new NPC("Warrior_Guard_9", "temp_name"), WorldController.getFaction("faction_warriors"));
+		WorldController.initializeNPC(new NPC("Warrior_Guard_10", "temp_name"), WorldController.getFaction("faction_warriors"));
+		WorldController.initializeNPC(new NPC("Warrior_Citizen_1", "temp_name"), WorldController.getFaction("faction_warriors"));
+		WorldController.initializeNPC(new NPC("Warrior_Citizen_2", "temp_name"), WorldController.getFaction("faction_warriors"));
+		WorldController.initializeNPC(new NPC("Warrior_Citizen_3", "temp_name"), WorldController.getFaction("faction_warriors"));
+		WorldController.initializeNPC(new NPC("Warrior_Citizen_4", "temp_name"), WorldController.getFaction("faction_warriors"));
+		WorldController.initializeNPC(new NPC("Warrior_Citizen_5", "temp_name"), WorldController.getFaction("faction_warriors"));
+		WorldController.initializeNPC(new NPC("Warrior_Citizen_6", "temp_name"), WorldController.getFaction("faction_warriors"));
+		WorldController.initializeNPC(new NPC("Warrior_King", "temp_name"), WorldController.getFaction("faction_warriors"));
+		
+		// Quests
 		try {
-			qt.initQuest(new Quest(TestQuest.getQuestID(), TestQuest.getTitle(), TestQuest.getDescription(), TestQuest.getCode(), TestQuest.getResponses(), TestQuest.getXPAmount(), TestQuest.getGoldAmount(), null));
-			qt.initQuest(new Quest(NavigationQuest.getQuestID(), NavigationQuest.getTitle(), NavigationQuest.getDescription(), NavigationQuest.getCode(), NavigationQuest.getResponses(), NavigationQuest.getXPAmount(), NavigationQuest.getGoldAmount(), null));
-			qt.initQuest(new Quest(PVPQuest.getQuestID(), PVPQuest.getTitle(), PVPQuest.getDescription(), PVPQuest.getCode(), PVPQuest.getResponses(), PVPQuest.getXPAmount(), PVPQuest.getGoldAmount(), null));
+			@SuppressWarnings("unused")
+			
+			NavigationQuest navi = new NavigationQuest(0,0, null, 1, 0);
 		} catch (QuestIDInUse e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		aam.init_abilities();
+		DialogueSystem.init_dialog();
+		gameplayScheduler(this);
+		
+		
 		getServer().getPluginManager().registerEvents(this, this);
 		getCommand("class").setExecutor(new PickClass());
 		getCommand("simulate").setExecutor(new SimulateSpell());
@@ -135,6 +188,8 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		getCommand("nfquest").setExecutor(new NFQuest());
 		getCommand("nfdialog").setExecutor(new RunDialog());
 		getCommand("fl").setExecutor(new FLCommand());
+		getCommand("nftest").setExecutor(new NFTest());
+		getCommand("nfprint").setExecutor(new NFPrint());
 	}
 
 	public void onDisable() {
@@ -167,7 +222,7 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		}
 		
 		if (event.getView().getTitle().equals(selClass.getTitle(0))) {
-
+			player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BIT, 1, 1.3f);
 			selClass.inputResponse(event.getSlot(), player);
 
 			if (event.getClick().equals(ClickType.NUMBER_KEY)) {
@@ -432,8 +487,8 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 			public void run() {
 				// System.out.println("-- GLOBAL GAME CYCLE --");
 				gameplayLoop();
-				rogue.roguePassiveReset();
-				rogue.roguePassive();
+				//rogue.roguePassiveReset();
+				//rogue.roguePassive();
 
 			}
 
