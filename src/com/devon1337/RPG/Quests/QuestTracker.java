@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import com.devon1337.RPG.Commands.NFQuest;
 import com.devon1337.RPG.Debugging.Logging;
 import com.devon1337.RPG.Quests.Exceptions.QuestIDInUse;
+import com.devon1337.RPG.Utils.PartySystem;
 
 public class QuestTracker {
 
@@ -29,12 +30,23 @@ public class QuestTracker {
 			//questList.put(player, fixAL(getQuests(player), quest));
 			
 			
+			if(PartySystem.inParty(player)) { 
+				for(int i = 0; i < PartySystem.getParty(PartySystem.getId(player)).size(); i++) {
+					Player target = PartySystem.getParty(PartySystem.getId(player)).get(i);
+					if(player != target) {
+						target.sendMessage(ChatColor.DARK_GRAY + player.getName() + " has accepted " + quest.getTitle() + "!");
+					}
+				}
+			}
+			
 			if (getQuests(player) == null) {
 				questList.put(player.getUniqueId(), fixAL(new ArrayList<Quest>(), quest));
 			} else {
 				questList.put(player.getUniqueId(), fixAL(getQuests(player), quest));
 			}
-
+			
+			playersQuest(quest.QuestID, player).setPlayer(player);
+			playersQuest(quest.QuestID, player).setCurSteps(0);
 			System.out.println("Player: " + player.getName() + " has accepted questID: " + quest.QuestID);
 			player.sendMessage(ChatColor.LIGHT_PURPLE + "Quest acquired: " + ChatColor.GOLD + ChatColor.BOLD + quest.Title);
 			player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
@@ -48,6 +60,14 @@ public class QuestTracker {
 			}
 		}
 	}
+	
+	public static void generateQuestMetaData() {
+		// Player
+		// Current Step
+		
+		
+	}
+	
 
 	public static boolean QuestListContains(ArrayList<Quest> GQLCode, String CompareCode) {
 		for(int i = 0; i < GQLCode.size(); i++) {
@@ -101,7 +121,14 @@ public class QuestTracker {
 	}
 
 	public static ArrayList<Quest> getQuests(Player player) {
+		//Logging.OutputToConsole("getQuest Check: Quest: " + questList.get(player.getUniqueId()).get(0).getTitle() + " Quest Step 1: " + questList.get(player.getUniqueId()).get(0).getStep(0));
 		return questList.get(player.getUniqueId());
+	}
+	
+	public static void displayAllPlayerQuests(Player player) { 
+		for(int i = 0; i < questList.get(player.getUniqueId()).size(); i++) {
+			Logging.OutputToConsole("Quest: " + questList.get(player.getUniqueId()).get(i).getTitle() + " Quest Step 1: " + questList.get(player.getUniqueId()).get(i).getStep(0));
+		}
 	}
 
 	public static void initQuest(Quest quest) throws QuestIDInUse {

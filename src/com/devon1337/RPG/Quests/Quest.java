@@ -1,5 +1,8 @@
 package com.devon1337.RPG.Quests;
 
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -16,12 +19,13 @@ public abstract class Quest {
 	 * 3 - Failed
 	 */
 	
-	public Player player;
+	public UUID player;
 	public int Status, QuestID, XP_Amount, Gold_Amount, CurSteps = 0, StepAmount = 5;
 	public String Title, Description, Code;
 	public String[] Steps;
 	
 	public Quest(int QuestID, String Title, String Description, String Code, String[] Steps, int XP_Amount, int Gold_Amount, Player player, int Status, int StepAmount) throws QuestIDInUse {
+		
 		this.QuestID = QuestID;
 		this.Title = Title;
 		this.Description = Description;
@@ -29,7 +33,9 @@ public abstract class Quest {
 		this.Steps = Steps;
 		this.XP_Amount = XP_Amount;
 		this.Gold_Amount = Gold_Amount;
-		this.player = player;
+		if(player != null) {
+		this.player = player.getUniqueId();
+		}
 		QuestTracker.initQuest(this);
 	}
 	
@@ -41,7 +47,9 @@ public abstract class Quest {
 		this.Steps = quest.Steps;
 		this.XP_Amount = quest.XP_Amount;
 		this.Gold_Amount = quest.Gold_Amount;
-		this.player = player;
+		if(player != null) {
+		this.player = player.getUniqueId();
+		}
 		this.Status = Status;
 		this.StepAmount = StepAmount;
 	}
@@ -76,21 +84,21 @@ public abstract class Quest {
 	
 	public Player getPlayer() {
 		if(player != null) {
-			return player;
+			return Bukkit.getPlayer(player);
 		}
 		return null;
 	}
 	
 	public void setPlayer(Player player) {
-		
+		this.player = player.getUniqueId();
 	}
 	
 	public void setStatus(int Status) {
 		
 		if(Status == 2) {			
-			player.sendMessage(ChatColor.LIGHT_PURPLE + "Quest Complete: " + ChatColor.GOLD + ChatColor.BOLD + Title);
-			player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
-			NFQuest.addPlayer(player);
+			getPlayer().sendMessage(ChatColor.LIGHT_PURPLE + "Quest Complete: " + ChatColor.GOLD + ChatColor.BOLD + Title);
+			getPlayer().playSound(getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+			NFQuest.addPlayer(getPlayer());
 		}
 		
 		this.Status = Status;

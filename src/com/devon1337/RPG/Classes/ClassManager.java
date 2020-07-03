@@ -1,6 +1,7 @@
 package com.devon1337.RPG.Classes;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import org.bukkit.entity.Player;
 
@@ -15,10 +16,10 @@ public class ClassManager {
 	
 	public boolean isPlayerInTeam(Player player, boolean remove) {
 		
-		ArrayList<Player> holder = rogue.getPlayers();
+		ArrayList<UUID> holder = rogue.getPlayers();
 		
-		for(Player p : holder) {
-			if(p.equals(player)) {
+		for(UUID p : holder) {
+			if(p.equals(player.getUniqueId())) {
 				if(remove) {
 					rogue.removePlayer(player);
 				}
@@ -27,8 +28,8 @@ public class ClassManager {
 		}
 		
 		holder = druid.getPlayers();
-		for(Player p : holder) {
-			if(p.equals(player)) {
+		for(UUID p : holder) {
+			if(p.equals(player.getUniqueId())) {
 				if(remove) {
 					druid.removePlayer(player);
 				}
@@ -37,8 +38,8 @@ public class ClassManager {
 		}
 		
 		holder = warrior.getPlayers();
-		for(Player p : holder) {
-			if(p.equals(player)) {
+		for(UUID p : holder) {
+			if(p.equals(player.getUniqueId())) {
 				if(remove) {
 					warrior.removePlayer(player);
 				}
@@ -47,8 +48,8 @@ public class ClassManager {
 		}
 		
 		holder = mage.getPlayers();
-		for(Player p : holder) {
-			if(p.equals(player)) {
+		for(UUID p : holder) {
+			if(p.equals(player.getUniqueId())) {
 				if(remove) {
 					mage.removePlayer(player);
 				}

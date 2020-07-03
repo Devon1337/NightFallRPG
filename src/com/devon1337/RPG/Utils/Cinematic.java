@@ -29,7 +29,8 @@ public class Cinematic {
 	
 	
 	public Cinematic(String Code, String Name, String... Paths) {
-		
+		this.Code = Code;
+		this.Name = Name;
 	}
 	
 	public String getPath(String path) {

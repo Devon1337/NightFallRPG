@@ -12,8 +12,8 @@ public class NavigationQuest extends Quest {
 	public final static String[] STEPS = {"Find the entrance to Stonefall Abyss", "Talk to ROGUE_WELCOME_1"};
 	public final static int QUESTID = 2, XP_Amount = 100, Gold_Amount = 100;
 	
-	public NavigationQuest(int XP_Amount, int Gold_Amount, Player player, int Status, int StepAmount) throws QuestIDInUse {
-		super(QUESTID, TITLE, DESCRIPTION, CODE, STEPS, XP_Amount, Gold_Amount, player, Status, StepAmount);
+	public NavigationQuest(int XP_Amount, int Gold_Amount, Player player, int Status) throws QuestIDInUse {
+		super(QUESTID, TITLE, DESCRIPTION, CODE, STEPS, XP_Amount, Gold_Amount, player, Status, STEPS.length);
 		// TODO Auto-generated constructor stub
 	}
 	

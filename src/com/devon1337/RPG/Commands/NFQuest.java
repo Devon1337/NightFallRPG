@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 
-import com.devon1337.RPG.Debugging.Logging;
+//import com.devon1337.RPG.Debugging.Logging;
 import com.devon1337.RPG.Quests.QuestTracker;
 import com.devon1337.RPG.Utils.DialogueSystem;
 
@@ -46,7 +46,6 @@ public class NFQuest implements CommandExecutor {
 		}
 
 		
-		//Logging.OutputToConsole("Name: " + player);
 		
 		if (arg3.length == 1 && !QuestTracker.hasQuest(player, QuestTracker.grabQuest(Integer.parseInt(arg3[0])))
 				&& player != null && !arg3[0].equalsIgnoreCase("confirm")) {
@@ -76,6 +75,7 @@ public class NFQuest implements CommandExecutor {
 			QuestTracker.playersQuest(Integer.parseInt(arg3[2]), player).setStatus(2);
 			return true;
 		}
+		
 
 		return false;
 	}
@@ -96,25 +96,29 @@ public class NFQuest implements CommandExecutor {
 	}
 
 	public static ItemStack createQuestBook(Player player) {
+		QuestTracker.displayAllPlayerQuests(player);
 		ArrayList<String> pages = new ArrayList<String>();
 
 		for (int i = 0; i < QuestTracker.getQuests(player).size(); i++) {
-			String message = "\n\n";
-			for (int j = 0; j < QuestTracker.getQuests(player).size(); j++) { 
+			//String message = "\n";
+			
+			/*
+			for (int j = 0; j < QuestTracker.getQuests(player).get(i).getStepAmount(); j++) { 
 				if(QuestTracker.getQuests(player).get(i).CurSteps > i || QuestTracker.getQuests(player).get(i).getStatus() == 1) {
-					
+					Logging.OutputToConsole("Quest: " + QuestTracker.getQuests(player).get(i).getTitle() + " Step 1: " + QuestTracker.getQuests(player).get(i).getStep(0));
 					
 					message = message + ChatColor.GRAY + QuestTracker.getQuests(player).get(i).getStep(j) + "\n";
 				} else if (QuestTracker.getQuests(player).get(i).CurSteps > i) {
+					Logging.OutputToConsole("Quest: " + QuestTracker.getQuests(player).get(i).getTitle() + " Step 1: " + QuestTracker.getQuests(player).get(i).getStep(0));
 					message = message + ChatColor.LIGHT_PURPLE + QuestTracker.getQuests(player).get(i).getStep(j) + "\n";
 				}
 			}
 			
 			Logging.OutputToConsole("Current Message: " + message);
-			
+			*/
 			if (QuestTracker.getQuests(player).get(i).Status == 1) {
 				pages.add(ChatColor.GOLD + QuestTracker.getQuests(player).get(i).getTitle() + "\n\n"
-						+ ChatColor.DARK_PURPLE + QuestTracker.getQuests(player).get(i).Description + message);
+						+ ChatColor.DARK_PURPLE + QuestTracker.getQuests(player).get(i).Description);
 			}
 			
 			
@@ -127,11 +131,6 @@ public class NFQuest implements CommandExecutor {
 						+ QuestTracker.getQuests(player).get(i).Description);
 			}
 			
-			for (int j = 0; j < QuestTracker.getQuests(player).size(); j++) { 
-				if(QuestTracker.getQuests(player).get(i).CurSteps > j) {
-					
-				}
-			}
 			
 		}
 		

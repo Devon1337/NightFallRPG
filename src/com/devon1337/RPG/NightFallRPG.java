@@ -4,8 +4,10 @@ import com.devon1337.RPG.Player.*;
 import com.devon1337.RPG.Quests.NavigationQuest;
 import com.devon1337.RPG.Quests.PVPQuest;
 import com.devon1337.RPG.Quests.QuestTracker;
+import com.devon1337.RPG.Quests.TestQuest;
 import com.devon1337.RPG.Quests.Exceptions.QuestIDInUse;
 import com.devon1337.RPG.Utils.AnimationController;
+import com.devon1337.RPG.Utils.Cinematic;
 import com.devon1337.RPG.Utils.DialogueSystem;
 import com.devon1337.RPG.Utils.FriendsList;
 import com.devon1337.RPG.Utils.Raycast.ProjectileType;
@@ -164,13 +166,17 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		
 		// Quests
 		try {
-			@SuppressWarnings("unused")
-			
-			NavigationQuest navi = new NavigationQuest(0,0, null, 1, 0);
+			new NavigationQuest(0,0, null, 1);
+			new PVPQuest(0,0, null, 1, 0);
+			new TestQuest(0,0, null, 1, 0);
 		} catch (QuestIDInUse e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		// Cinematics
+		Cinematic.loadPaths();
+		new Cinematic("WARRIOR_SPAWN", "Warrior Spawn", "warriorEntrance1", "warriorEntrance2", "warriorEntrance3");
 		
 		aam.init_abilities();
 		DialogueSystem.init_dialog();
@@ -357,8 +363,7 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 			}
 
 			if (item.getType() == Material.WHITE_DYE) {
-				@SuppressWarnings("unused")
-				Simulate raycast = new Simulate(player, ProjectileType.FIREBALL);
+				new Simulate(player, ProjectileType.FIREBALL);
 			}
 
 			if (item.getType() == Material.YELLOW_DYE) {

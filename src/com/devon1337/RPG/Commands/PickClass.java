@@ -1,6 +1,7 @@
 package com.devon1337.RPG.Commands;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -19,7 +20,7 @@ public class PickClass implements CommandExecutor {
 		// TODO Auto-generated method stub
 
 		Player player = (Player) sender;
-
+		player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BIT, 1, 1.3f);
 		if (sender instanceof Player) {
 			if (args.length > 0) {
 				if (args[0].equalsIgnoreCase("r")) {

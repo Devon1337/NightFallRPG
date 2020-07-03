@@ -137,6 +137,10 @@ public class ActiveAbilityManager {
 			return 3;
 		case DRUID:
 			return 0;
+		case DEPRIVED:
+			return 4;
+		default:
+			break;
 					
 			
 		}
