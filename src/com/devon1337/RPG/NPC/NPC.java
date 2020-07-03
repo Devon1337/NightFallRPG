@@ -1,5 +1,6 @@
 package com.devon1337.RPG.NPC;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -13,6 +14,7 @@ public class NPC {
 	public Faction faction;
 	public static HashMap<UUID, Integer> Reputation = new HashMap<UUID, Integer>();
 	public static HashMap<UUID, Dialog> CurDialog = new HashMap<UUID, Dialog>();
+	public static ArrayList<Dialog> DIALOG_LIST = new ArrayList<Dialog>();
 	
 	public NPC(String Code, String Name) {
 		this.Code = Code;
@@ -70,12 +72,15 @@ public class NPC {
 		
 	}
 	
-	public void getCurDialog(Player player) {
-		
+	public Dialog getCurDialog(Player player) {
+		return CurDialog.get(player.getUniqueId());
 	}
 	
-	public void setCurDialog(Player player, int curdia) {
-	
+	public void setCurDialog(Player player, Dialog dlog) {
+		if(dlog != null) {
+			CurDialog.remove(player.getUniqueId());
+			CurDialog.put(player.getUniqueId(), dlog);
+		}
 	}
 	
 	public void initializePlayerReputation(Player player, int rep) {

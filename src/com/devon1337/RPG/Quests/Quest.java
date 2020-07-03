@@ -36,6 +36,8 @@ public abstract class Quest {
 		if(player != null) {
 		this.player = player.getUniqueId();
 		}
+		this.Status = Status;
+		this.StepAmount = StepAmount;
 		QuestTracker.initQuest(this);
 	}
 	

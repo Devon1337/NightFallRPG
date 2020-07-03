@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 
+import com.devon1337.RPG.Debugging.Logging;
 //import com.devon1337.RPG.Debugging.Logging;
 import com.devon1337.RPG.Quests.QuestTracker;
 import com.devon1337.RPG.Utils.DialogueSystem;
@@ -100,9 +101,9 @@ public class NFQuest implements CommandExecutor {
 		ArrayList<String> pages = new ArrayList<String>();
 
 		for (int i = 0; i < QuestTracker.getQuests(player).size(); i++) {
-			//String message = "\n";
+			String message = "\n";
 			
-			/*
+			
 			for (int j = 0; j < QuestTracker.getQuests(player).get(i).getStepAmount(); j++) { 
 				if(QuestTracker.getQuests(player).get(i).CurSteps > i || QuestTracker.getQuests(player).get(i).getStatus() == 1) {
 					Logging.OutputToConsole("Quest: " + QuestTracker.getQuests(player).get(i).getTitle() + " Step 1: " + QuestTracker.getQuests(player).get(i).getStep(0));
@@ -115,10 +116,10 @@ public class NFQuest implements CommandExecutor {
 			}
 			
 			Logging.OutputToConsole("Current Message: " + message);
-			*/
+			
 			if (QuestTracker.getQuests(player).get(i).Status == 1) {
 				pages.add(ChatColor.GOLD + QuestTracker.getQuests(player).get(i).getTitle() + "\n\n"
-						+ ChatColor.DARK_PURPLE + QuestTracker.getQuests(player).get(i).Description);
+						+ ChatColor.DARK_PURPLE + QuestTracker.getQuests(player).get(i).Description + message);
 			}
 			
 			
@@ -149,5 +150,40 @@ public class NFQuest implements CommandExecutor {
 
 		return writtenBook;
 	}
+	
+	
+	/*
+	public static ItemStack createQuestBook(Player player) {
+		ArrayList<String> pages = new ArrayList<String>();
+
+		for (int i = 0; i < QuestTracker.getQuests(player).size(); i++) {
+			if (QuestTracker.getQuests(player).get(i).Status == 1) {
+				pages.add(ChatColor.GOLD + QuestTracker.getQuests(player).get(i).getTitle() + "\n\n"
+						+ ChatColor.DARK_PURPLE + QuestTracker.getQuests(player).get(i).Description);
+			}
+		}
+
+		for (int i = 0; i < QuestTracker.getQuests(player).size(); i++) {
+			if (QuestTracker.getQuests(player).get(i).Status == 2) {
+				pages.add(ChatColor.GRAY + QuestTracker.getQuests(player).get(i).getTitle() + "\n\n" + ChatColor.GRAY
+						+ QuestTracker.getQuests(player).get(i).Description);
+			}
+		}
+
+		ArrayList<String> tx = new ArrayList<String>();
+		tx.add("dont-hide");
+
+		ItemStack writtenBook = new ItemStack(Material.WRITTEN_BOOK);
+		BookMeta bookMeta = (BookMeta) writtenBook.getItemMeta();
+		bookMeta.setTitle("Quests");
+		bookMeta.setAuthor("NightFallRPG");
+		bookMeta.setLore(tx);
+		bookMeta.setPages(pages);
+		writtenBook.setItemMeta(bookMeta);
+
+		return writtenBook;
+	}
+	*/
+	
 
 }

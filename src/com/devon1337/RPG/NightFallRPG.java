@@ -7,7 +7,6 @@ import com.devon1337.RPG.Quests.QuestTracker;
 import com.devon1337.RPG.Quests.TestQuest;
 import com.devon1337.RPG.Quests.Exceptions.QuestIDInUse;
 import com.devon1337.RPG.Utils.AnimationController;
-import com.devon1337.RPG.Utils.Cinematic;
 import com.devon1337.RPG.Utils.DialogueSystem;
 import com.devon1337.RPG.Utils.FriendsList;
 import com.devon1337.RPG.Utils.Raycast.ProjectileType;
@@ -175,8 +174,8 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		}
 		
 		// Cinematics
-		Cinematic.loadPaths();
-		new Cinematic("WARRIOR_SPAWN", "Warrior Spawn", "warriorEntrance1", "warriorEntrance2", "warriorEntrance3");
+		//Cinematic.loadPaths();
+		//new Cinematic("WARRIOR_SPAWN", "Warrior Spawn", "warriorEntrance1", "warriorEntrance2", "warriorEntrance3");
 		
 		aam.init_abilities();
 		DialogueSystem.init_dialog();

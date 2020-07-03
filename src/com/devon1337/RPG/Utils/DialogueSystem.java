@@ -40,6 +40,8 @@ public class DialogueSystem {
 		GLOBAL_DIALOG_LIST.add(new Dialog("GM_AREA_1_2", "View Travel Points Below:", generateResponseArray("Zuru Ganaboru", "/warp Ganaboru", "", "", "Warrior", "/warp Warrior", "", "", "Stonefall Abyss", "","", "", "Mage", "", "", ""), 7, "ROGUE_CRATES1"));
 		// Output: "You're the least bit useful!" Response: "..."
 		GLOBAL_DIALOG_LIST.add(new Dialog("ROGUE_QUEST_1_3", "You're the least bit useful!", generateResponseArray("...", "/nfprint ...", "", ""), 8, "ROGUE_EXIT_1"));
+		// Output: "I...I just can't jump, it's suicide!" Response: "Why'd you come...", "Go find a new town", "Follow me", "Why didn't you follow me."
+		GLOBAL_DIALOG_LIST.add(new Dialog("ROGUE_QUEST_2_1", "I...I just can't jump, It's suicide!", generateResponseArray("Why'd you come...", "", "", "", "Go find a new town!", "/nfprint Go_find_a_new_town!", "faction_rogues", "300", "Follow me!", "/nfprint Follow_me!", "", "", "Why didn't you follow  me!", "", "", ""), 9, "ROGUE_ENTRANCE_2"));
 		
 	}
 
@@ -85,7 +87,7 @@ public class DialogueSystem {
 		String temp_msg = "";
 		int adjusted = 0;
 		for(int i = 0; i < message.length(); i++) {
-			if(charCount == 25) {
+			if(charCount >= 25 && message.charAt(i) == ' ') {
 				Logging.OutputToConsole(temp_msg);
 				adjusted = RIGHT_WALL_DEFAULT-charCount;
 				setEdgeDistance(adjusted);
