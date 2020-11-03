@@ -1,37 +1,21 @@
-package com.devon1337.RPG.Classes;
+ package com.devon1337.RPG.Classes;
 
-import java.util.ArrayList;
-import java.util.Timer;
-import java.util.UUID;
+import org.bukkit.Material;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import com.devon1337.RPG.NFClasses;
 
-import com.devon1337.RPG.Player.PlayerStats;
+public class Mage extends GroupClass {
 
-public class Mage {
+	static String name = "Mage", description = "Test Description";
+	static NFClasses classes = NFClasses.MAGE;
+	static Material icon = Material.RED_DYE;
 	
-	public static ArrayList<String> pList = new ArrayList<String>();
-	public static ArrayList<UUID> pSel = new ArrayList<UUID>();
+	// Base Reputation Values: {Mage, Rogue, Druid, Warrior}
+	// -1.0f (Hated) - 0.0f (Unknown) - 1.0f (Loved) -> 10.0f (Self)
+	static float[] ReputationValues = {1.0f, 1.0f, 1.0f, 1.0f};
 	
-	public PlayerStats stats = new PlayerStats();
-	
-	public static Timer recur = new Timer();
-
-	public void getUpgradeOptions() {
-
+	public Mage() {
+		super(name,description,classes,icon,ReputationValues);
 	}
-
-	public int getPlayerAmount() { return pSel.size(); }
-	
-	public Player getPlayer(int i) { return Bukkit.getPlayer(pSel.get(i)); }
-	
-	public ArrayList<UUID> getPlayers() { return pSel; }
-	
-	public void addPlayer(Player player) { pList.add(player.getName()); pSel.add(player.getUniqueId()); }
-
-	public void removePlayer(Player player) { pList.remove(player.getName()); pSel.remove(player.getUniqueId()); }
-
-	public boolean playerExists(Player player) { return pList.contains(player.getName()); }
 	
 }
