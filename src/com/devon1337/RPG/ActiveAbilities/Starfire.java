@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import com.devon1337.RPG.NFClasses;
 import com.devon1337.RPG.PassiveAbilities.PassiveType;
 
-public class Starfire extends Spell{
+public class Starfire extends Spell implements ISpell{
 	
 	/**
 	 * 
@@ -21,16 +21,23 @@ public class Starfire extends Spell{
 	static final Material spellIcon = Material.IRON_SWORD;
 	static final SpellType spellType = SpellType.SkillShot;
 	
-	public Starfire(int id) {
-		super(Name, Description, id, spellType, spellIcon, 10, 5, classReq, availPassives);
+	public Starfire() {
+		super(Name, Description, spellType, spellIcon, 10, 5, classReq, availPassives);
 	}
 	
-	public static void use(Player player, ArrayList<Player> targets) {
+	public double use(Player player, ArrayList<Player> targets) {
 		for(Player p : targets) {
 			p.sendMessage("hit");
 		}
+		return 0;
 		
 		
+	}
+
+	@Override
+	public ISpell getISpell() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

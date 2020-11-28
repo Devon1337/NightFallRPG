@@ -32,6 +32,7 @@ import com.devon1337.RPG.Commands.NFGetDialog;
 import com.devon1337.RPG.Commands.NFInteractWith;
 import com.devon1337.RPG.Commands.NFListNPC;
 import com.devon1337.RPG.Commands.NFMessage;
+import com.devon1337.RPG.Commands.NFObjects;
 import com.devon1337.RPG.Commands.NFPrint;
 import com.devon1337.RPG.Commands.NFQuest;
 import com.devon1337.RPG.Commands.NFRaidMaker;
@@ -45,10 +46,15 @@ import com.devon1337.RPG.Commands.Reply;
 import com.devon1337.RPG.Commands.Roll;
 import com.devon1337.RPG.Commands.Trade;
 import com.devon1337.RPG.Debugging.Logging;
-import com.devon1337.RPG.Menus.SelectClass;
+import com.devon1337.RPG.Menus.CreativeObjectMenu;
 import com.devon1337.RPG.NPC.NPC;
 import com.devon1337.RPG.NPC.WorldController;
+import com.devon1337.RPG.Objects.BlankObject;
 import com.devon1337.RPG.Objects.EasterEggs.CappaTheShopStand;
+import com.devon1337.RPG.Objects.GroundZero.DruidClassBook;
+import com.devon1337.RPG.Objects.GroundZero.MageClassBook;
+import com.devon1337.RPG.Objects.GroundZero.RogueClassBook;
+import com.devon1337.RPG.Objects.GroundZero.WarriorClassBook;
 import com.devon1337.RPG.PassiveAbilities.Lifesteal;
 import com.devon1337.RPG.Player.DatabaseAccess;
 import com.devon1337.RPG.Player.NFPlayer;
@@ -62,20 +68,27 @@ import com.devon1337.RPG.Utils.FileManager;
 import com.devon1337.RPG.Utils.FriendsList;
 import com.devon1337.RPG.Utils.InventoryAssistant;
 import com.devon1337.RPG.Utils.MOTD;
+import com.devon1337.RPG.Utils.Menu;
+import com.devon1337.RPG.Utils.PickPocket;
 import com.devon1337.RPG.Utils.Raycast.Exceptions.BadProjectile;
 import com.devon1337.RPG.Utils.Raycast.Exceptions.ObjectsNotUsed;
+import com.devon1337.RPG.WeaponEffects.Weapon;
+import com.devon1337.RPG.WeaponEffects.Effects.Prefixes;
+import com.devon1337.RPG.WeaponEffects.Effects.WType;
+import com.devon1337.RPG.WeaponEffects.Effects.Prefix.Minor;
+import com.devon1337.RPG.WeaponEffects.Effects.Type.Frozen;
 //import com.devon1337.RPG.Utils.Raycast.Raycast;
 import com.devon1337.RPG.Utils.Raycast.RaycastHitEvent;
 import com.devon1337.RPG.raid.MatchmakingController;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import net.raidstone.wgevents.events.RegionEnteredEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -94,6 +107,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -101,8 +115,6 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 //import org.bukkit.persistence.PersistentDataContainer;
 //import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
@@ -137,25 +149,44 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		
 		// Load order
 		
-		new Assassinate(0);
-		new Blood_Shield(1);
-		new Charge(2);
-		new Confusion(3);
-		new Entanglement(4);
-		new Fireball(5);
-		new MOTW(6);
-		new Rejuvenate(7);
-		new Shield_Slam(8);
-		new Starfire(9);
-		new Tranquility(10);
-		new Vanish(11);
-		new Wrath(12);
-		new NightmareSlasher(13);
-		new Shield_Bash(14);
-		new Empty(15);
-		new HeatedJuggernaut(16);
-		new Explosive_Strike(17);
-		new Plague_Touch(18);
+		Assassinate as = new Assassinate();
+		GlobalSpellbook.getSpell(GlobalSpellbook.getSpellSize()-1).setISpell(as);
+		Blood_Shield bs = new Blood_Shield();
+		GlobalSpellbook.getSpell(GlobalSpellbook.getSpellSize()-1).setISpell(bs);
+		Charge ch = new Charge();
+		GlobalSpellbook.getSpell(GlobalSpellbook.getSpellSize()-1).setISpell(ch);
+		Confusion cu = new Confusion();
+		GlobalSpellbook.getSpell(GlobalSpellbook.getSpellSize()-1).setISpell(cu);
+		Entanglement en = new Entanglement();
+		GlobalSpellbook.getSpell(GlobalSpellbook.getSpellSize()-1).setISpell(en);
+		Fireball fb = new Fireball();
+		GlobalSpellbook.getSpell(GlobalSpellbook.getSpellSize()-1).setISpell(fb);
+		MOTW mw = new MOTW();
+		GlobalSpellbook.getSpell(GlobalSpellbook.getSpellSize()-1).setISpell(mw);
+		Rejuvenate re = new Rejuvenate();
+		GlobalSpellbook.getSpell(GlobalSpellbook.getSpellSize()-1).setISpell(re);
+		Shield_Slam ss = new Shield_Slam();
+		GlobalSpellbook.getSpell(GlobalSpellbook.getSpellSize()-1).setISpell(ss);
+		Starfire sf = new Starfire();
+		GlobalSpellbook.getSpell(GlobalSpellbook.getSpellSize()-1).setISpell(sf);
+		Tranquility tq = new Tranquility();
+		GlobalSpellbook.getSpell(GlobalSpellbook.getSpellSize()-1).setISpell(tq);
+		Vanish vn = new Vanish();
+		GlobalSpellbook.getSpell(GlobalSpellbook.getSpellSize()-1).setISpell(vn);
+		Wrath wr = new Wrath();
+		GlobalSpellbook.getSpell(GlobalSpellbook.getSpellSize()-1).setISpell(wr);
+		NightmareSlasher ns = new NightmareSlasher();
+		GlobalSpellbook.getSpell(GlobalSpellbook.getSpellSize()-1).setISpell(ns);
+		Shield_Bash sb = new Shield_Bash();
+		GlobalSpellbook.getSpell(GlobalSpellbook.getSpellSize()-1).setISpell(sb);
+		Empty em = new Empty();
+		GlobalSpellbook.getSpell(GlobalSpellbook.getSpellSize()-1).setISpell(em);
+		HeatedJuggernaut hj = new HeatedJuggernaut();
+		GlobalSpellbook.getSpell(GlobalSpellbook.getSpellSize()-1).setISpell(hj);
+		Explosive_Strike es = new Explosive_Strike();
+		GlobalSpellbook.getSpell(GlobalSpellbook.getSpellSize()-1).setISpell(es);
+		Plague_Touch pt = new Plague_Touch();
+		GlobalSpellbook.getSpell(GlobalSpellbook.getSpellSize()-1).setISpell(pt);
 		new Lifesteal();
 		
 		new Druid();
@@ -170,10 +201,37 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 			e.printStackTrace();
 		}
 		
+		// Initializing Weapon Prefixes
+		Minor m = new Minor();
+		Prefixes p = m;
+		p.setIPrefix(m.getIPrefix());
+		
+		// Initializing Weapon Types
+		Frozen f = new Frozen();
+		WType w = f;
+		w.setIWeapon(f.getIWeapon());
+		
 		DialogueSystem.init_dialog();
 		gameplayScheduler((Plugin) this);
+		new DruidClassBook();
+		new RogueClassBook();
+		new WarriorClassBook();
+		new MageClassBook();
+		ArrayList<WType> types = new ArrayList<WType>();
+		ArrayList<Prefixes> prefixes = new ArrayList<Prefixes>();
+		
+		types.add(w);
+		prefixes.add(p);
+		
+		Weapon wp = new Weapon(types, prefixes, Material.DIAMOND_SWORD);
 
+		new BlankObject(wp.getItem(), wp.getName());
+		
 		CappaTheShopStand.init_dialog();
+		
+		// Menu Loading
+		CreativeObjectMenu com = new CreativeObjectMenu();
+		Menu.getMenu(0).setIMenu(com.getIMenu());
 
 		getServer().getPluginManager().registerEvents(this, (Plugin) this);
 		getCommand("class").setExecutor((CommandExecutor) new PickClass());
@@ -194,10 +252,16 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		getCommand("nftravel").setExecutor((CommandExecutor) new NFTravel());
 		getCommand("nfraid").setExecutor((CommandExecutor) new NFRaidMaker());
 		getCommand("nfinteractwith").setExecutor((CommandExecutor) new NFInteractWith());
+		getCommand("nfobjects").setExecutor((CommandExecutor) new NFObjects());
 		
 		FileManager.exportNpc();
 		FileManager.exportDialog();
-		gameplayScheduler(this);
+		try {
+			FileManager.importFastTravel();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void onDisable() {
@@ -207,10 +271,9 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 	public void onHeldEvent(PlayerItemHeldEvent event) {
 		Player player = (Player) event.getPlayer();
 		if(event.getNewSlot() < 4) {
+			
+		// TODO: Close the loop off plzzzz :(((
 		for(Spell s : GlobalSpellbook.getSpells()) {
-			
-			
-			
 			if(s.getItem().equals(event.getPlayer().getInventory().getItem(event.getNewSlot())) && s.getSpellType() != SpellType.WeaponArt) {
 				Logging.OutputToPlayer("Spell: " + s.getName(), player);
 				Spell.start(s, player);
@@ -223,18 +286,26 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 	// Inventory Response Handler
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
-		//Player player = (Player) event.getWhoClicked();
-		
-		if(event.getView().getTitle() == SelectClass.getTitle()) {
-			SelectClass.response(event.getCurrentItem(),(Player) event.getWhoClicked());
+		Player p1 = (Player) event.getWhoClicked();
+		NFPlayer player = NFPlayer.getPlayer(p1.getUniqueId());
+		if(player.getMenu() != null) {
+			player.getMenu().runResponse(player, event.getRawSlot());
 			event.setCancelled(true);
-		} 
+		}
+		
 	}
 
+	/* Player on Death Event
+	* - Used for making sure the spells dont drop as items
+	* - Used for quest tracking
+	*/
 	@EventHandler
 	public void onDeathEvent(PlayerDeathEvent event) {
+		Player player = event.getEntity();
 		
-		
+		player.getInventory().setItem(0, new ItemStack(Material.AIR));
+		player.getInventory().setItem(1, new ItemStack(Material.AIR));
+		player.getInventory().setItem(2, new ItemStack(Material.AIR));
 		
 		// Specific Quest
 		if (event.getEntity().getKiller() instanceof Player && event.getEntity().getKiller() != null
@@ -247,6 +318,9 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		}
 	}
 	
+	/* Player Respawn Event
+	 * - Used for HP Logic
+	 */
 	@EventHandler 
 	public void onRespawnEvent(PlayerRespawnEvent event) {
 		
@@ -254,6 +328,11 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		NFPlayer.getPlayer(event.getPlayer().getUniqueId()).setHp(NFPlayer.getPlayer(event.getPlayer().getUniqueId()).getMaxHp());
 	}
 	
+	
+	/* Player on Regeneration Health Event 
+	 * - Used to detect and adjust players health due to base game reasons.
+	 * 
+	 */
 	@EventHandler
 	public void onRegen(EntityRegainHealthEvent event) {
 		
@@ -267,10 +346,11 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 	@EventHandler
 	public void onDamageEvent(EntityDamageEvent event) {
 		
-		Player player = (Player) event.getEntity();
+		
 		
 		// Adjusts players HP for damage Taken from non-nfrpg means
-		if(player != null) {
+		if(event.getEntity() instanceof Player && (Player) event.getEntity() != null) {
+			Player player = (Player) event.getEntity();
 			if(((player.getHealth() - event.getDamage()) < 1) && (NFPlayer.getPlayer(player.getUniqueId()).getHp() - event.getDamage() > 1)) {
 				event.setCancelled(true);
 			}
@@ -305,12 +385,34 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		}
 		
 	}
+	
+	// Player Interact Entity Event
+	@SuppressWarnings("unused")
+	@EventHandler
+	public void onInteractEvent(PlayerInteractEntityEvent e) {
+		if (e.getRightClicked() instanceof Player) {
+			Player p = e.getPlayer(), t = (Player) e.getRightClicked();
+			if (p.isSneaking()) {
+				PickPocket p2 = new PickPocket(NFPlayer.getPlayer(p.getUniqueId()),
+						NFPlayer.getPlayer(t.getUniqueId()));
+			}
+		}
+	}
+	
 
 	@EventHandler
 	public void onRegionEnter(RegionEnteredEvent e) {
 		Player player = e.getPlayer();
 
 		if (player instanceof Player) {
+			
+			switch(e.getRegionName()) {
+			case "warrior_fasttravel":
+				e.getPlayer().sendMessage("You now have access to the warrior waypoint!");
+				getServer().dispatchCommand((CommandSender) Bukkit.getServer().getConsoleSender(), "lp user " + e.getPlayer().getName() + " add nightfallrpg.fasttravel.warrior");
+			}
+			
+			/*
 			if (e.getRegionName().equals("dspawn_int")) {
 				//player.sendTitle("Lundessal's Ancient Water", "", 10, 40, 10);
 				//player.playSound(player.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1.0F, 0.1F);
@@ -335,7 +437,7 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 
 				player.sendTitle("Zuru'Ganaboru", "", 10, 40, 10);
 				player.playSound((Location) player.getWorld(), Sound.BLOCK_BEACON_ACTIVATE, 1.0F, 0.1F);
-			}
+			*/
 		}
 	}
 
@@ -444,7 +546,8 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		Logging.OutputToConsole("Shoot");
 		ArrayList<Player> targets = new ArrayList<Player>();
 		targets.add(Bukkit.getPlayer(e.getTarget()));
-		Spell.runAbility(e.getSpell(), Bukkit.getPlayer(e.getShooter()), targets);
+		e.getSpell().getSpellMethod().use(Bukkit.getPlayer(e.getShooter()), targets);
+		//Spell.runAbility(e.getSpell(), Bukkit.getPlayer(e.getShooter()), targets);
 	}
 	
 	@EventHandler
@@ -493,16 +596,18 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		if (event.getEntity() instanceof Player && event.getDamager() instanceof Player) {
 			Player player = (Player) event.getDamager();
 			
-			PersistentDataContainer container = player.getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer();
+			//PersistentDataContainer container = player.getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer();
 			
 			// Nightmare Slasher
+			/*
 			if(container.has(NightmareSlasher.getKey(), PersistentDataType.INTEGER) && intToBool(container.get(NightmareSlasher.getKey(), PersistentDataType.INTEGER))) {
 				NightmareSlasher.Slash(player, (Player) event.getEntity());
 			}
+			*/
 			
 			for(Spell s : GlobalSpellbook.getSpells()) {
 			// Weapon Arts
-			if(s.getSpellType() == SpellType.WeaponArt) {
+			if(s.getSpellType() == SpellType.WeaponArt && s.getItem() == player.getItemOnCursor()) {
 				Spell.CastAttack(s, player, (Player) event.getEntity());
 			}
 			
@@ -538,10 +643,12 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 					}
 				}
 				*/
-				
+				Spell.runCooldown();
+				/*
 				for(Spell s : GlobalSpellbook.getSpells()) {
 					s.runCooldown();
 				}
+				*/
 				
 			}
 		}, 0L, 20L);

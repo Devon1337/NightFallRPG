@@ -33,6 +33,16 @@ public class GlobalSpellbook {
 		return AllPassives;
 	}
 	
+	public static Spell getSpell(int id) {
+		for(Spell s : AllSpells) {
+			if(s.getId() == id) {
+				return s;
+			}
+		}
+		
+		return null;
+	}
+	
 	public static void updateCooldowns() {
 		
 	}

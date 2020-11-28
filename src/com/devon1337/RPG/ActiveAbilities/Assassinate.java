@@ -1,5 +1,7 @@
 package com.devon1337.RPG.ActiveAbilities;
 
+import java.util.ArrayList;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -8,7 +10,7 @@ import org.bukkit.entity.Player;
 import com.devon1337.RPG.NFClasses;
 import com.devon1337.RPG.PassiveAbilities.PassiveType;
 
-public class Assassinate extends Spell{
+public class Assassinate extends Spell implements ISpell {
 
 	/**
 	 * 
@@ -24,19 +26,35 @@ public class Assassinate extends Spell{
 	static final Material spellIcon = Material.IRON_SWORD;
 	static final SpellType spellType = SpellType.SkillShot;
 	
-	public Assassinate(int id) {
-		super(Name, Description, id, spellType, spellIcon, 10, 5, classReq, availPassives);
+	public Assassinate() {
+		//Object obj = Assassinate.class.getInterfaces()[0];
+		super(Name, Description, spellType, spellIcon, 10, 5, classReq,  availPassives);
 	}
 	
-	public static void use(Player player, Player target) {
+	public double use(Player player, ArrayList<Player> targets) {
 		
-		double maxHP = target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
-		if (target.getHealth() < maxHP / 3.0D) {
-			player.sendMessage(ChatColor.GREEN + "-- Assassinated --");
-			target.setHealth(0.0D);
-		} else {
-			player.sendMessage(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Missed!");
-		}	
+		double DamageDealt = 0.0;
+		
+		for (Player target : targets) {
+
+			double maxHP = target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+			if (target.getHealth() < maxHP / 3.0D) {
+				player.sendMessage(ChatColor.GREEN + "-- Assassinated --");
+				DamageDealt += target.getHealth();
+				target.setHealth(0.0D);
+			} else {
+				player.sendMessage(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Missed!");
+			}
+		}
+		
+		return DamageDealt;
 	}
 	
+	public static String getSpellName() {
+		return Name;
+	}
+	
+	public ISpell getISpell() {
+		return (ISpell) this;
+	}
 }

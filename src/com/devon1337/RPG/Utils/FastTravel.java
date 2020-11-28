@@ -6,36 +6,43 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class FastTravel {
+	
 	private File dateFile = null;
-
 	private static ArrayList<Point> wayPoints = new ArrayList<>();
 
+	// Adds new Waypoint to Global
 	public static void addWayPoint(Point p1) {
 		wayPoints.add(p1);
 	}
 
+	// Checks if Waypoint exists
 	public static boolean wayPointExists(Point p1) {
 		return wayPoints.contains(p1);
 	}
 
+	// Removes Waypoint from Global
 	public static void removeWayPoint(Point p1) {
 		wayPoints.remove(p1);
 	}
 
+	// Gets Waypoint from Index
 	public static Point getWayPoint(int index) {
 		return wayPoints.get(index);
 	}
 
+	// Warps a player to a set Point
 	public static void warpToPoint(Player player, Point p1) {
 		Location loc = new Location(p1.getWorld(), p1.getX(), p1.getY() + 0.3D, p1.getZ(), p1.getYaw(), p1.getPitch());
 
 		player.teleport(loc);
 	}
 
+	// Gets the list of all Waypoints
 	public static ArrayList<Point> grabList() {
 		return wayPoints;
 	}
 
+	// Displays all the way points.
 	public static void listWaypoints(Player player) {
 		for (int i = 0; i < wayPoints.size(); i++) {
 			player.sendMessage(String.valueOf(((Point) wayPoints.get(i)).getName()) + ": ("

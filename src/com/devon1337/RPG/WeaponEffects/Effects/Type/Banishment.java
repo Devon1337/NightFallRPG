@@ -12,10 +12,10 @@ import com.devon1337.RPG.WeaponEffects.Effects.WType;
 
 public class Banishment extends WType {
 
-	static String name = "Frozen";
+	static String name = "Banishment";
 	static float adjustSpeed = 1.0f;
-	public Banishment(int id) {
-		super(name, id);
+	public Banishment() {
+		super(name);
 	}
 	
 	public static void use(Player player, ArrayList<Player> targets) {

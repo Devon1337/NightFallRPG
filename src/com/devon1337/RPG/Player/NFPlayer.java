@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import com.devon1337.RPG.NFClasses;
 import com.devon1337.RPG.ActiveAbilities.GlobalSpellbook;
@@ -14,6 +15,8 @@ import com.devon1337.RPG.Debugging.Logging;
 import com.devon1337.RPG.Menus.LevelUpMenu;
 import com.devon1337.RPG.PassiveAbilities.Passive;
 import com.devon1337.RPG.PassiveAbilities.PassiveType;
+import com.devon1337.RPG.Utils.Menu;
+
 
 public class NFPlayer implements java.io.Serializable {
 
@@ -25,6 +28,7 @@ public class NFPlayer implements java.io.Serializable {
 	GroupClass pClass;
 	String BuildID, Name;
 	UUID id;
+	Menu inv;
 	int Level, xp, xpReq;
 	boolean online = false, isDead = false;
 	float xpGainMod = 1, damageResistance = 1.0f, playerSpeed;
@@ -32,13 +36,11 @@ public class NFPlayer implements java.io.Serializable {
 	Spell[] curSpells = new Spell[3];
 	ArrayList<Passive> curPassive = new ArrayList<Passive>();
 	
-	
 	// Data Retention
 	private static ArrayList<NFPlayer> globalPlayers = new ArrayList<NFPlayer>();
 	
 	private static final int xpBaseValue = 65, maxLevelClamp = 5;
 	private static final float xpBaseModifier = 2.75f;
-	
 	
 	public NFPlayer(NFClasses pClass_enum, String Name, UUID id) {
 		Logging.OutputToConsole("Player created!");
@@ -53,6 +55,7 @@ public class NFPlayer implements java.io.Serializable {
 		this.playerSpeed = Bukkit.getPlayer(id).getWalkSpeed();
 		this.currentHP = Bukkit.getPlayer(id).getHealth();
 		
+		
 		if(Bukkit.getPlayer(id).getName().equals("Devon1337")) {
 			this.currentHP = 100;
 			this.maxHp = 100;
@@ -63,7 +66,6 @@ public class NFPlayer implements java.io.Serializable {
 		Bukkit.getPlayer(id).setHealth(20*(this.currentHP/this.maxHp));
 		globalPlayers.add(this);
 	}
-	
 	
 	public NFPlayer(String Name, UUID id, Spell[] curSpells, ArrayList<Passive> curPassive, NFClasses pClass_enum,
 			double maxHp, double currentHP, float damageResistance, float xpGainMod, int Level, int xp) {
@@ -81,7 +83,10 @@ public class NFPlayer implements java.io.Serializable {
 		this.xp = xp;
 		this.playerSpeed = Bukkit.getPlayer(id).getWalkSpeed();
 		this.currentHP = Bukkit.getPlayer(id).getHealth();
-		Bukkit.getPlayer(id).setHealth(20*(this.currentHP/this.maxHp));
+		
+		
+		
+		
 		globalPlayers.add(this);
 	}
 	
@@ -102,6 +107,13 @@ public class NFPlayer implements java.io.Serializable {
 		return this.curPassive;
 	}
 	
+	public Menu getMenu() {
+		return this.inv;
+	}
+	
+	public void setMenu(Menu inv) {
+		this.inv = inv;
+	}
 	
 	public Passive getPassive(PassiveType pType) {
 		for(Passive p : curPassive) {
@@ -183,6 +195,8 @@ public class NFPlayer implements java.io.Serializable {
 				setLevel(this.getLevel()+1);
 				xpReq = getRequiredXp();
 			}
+
+			
 	}
 	
 	public float getSpeed() {
@@ -202,6 +216,10 @@ public class NFPlayer implements java.io.Serializable {
 		return this.id;
 	}
 	
+	public Player getPlayerFromUUID() {
+		return Bukkit.getPlayer(this.id);
+	}
+	
 	public float getDamageResistance() {
 		return this.damageResistance;
 	}
@@ -218,6 +236,21 @@ public class NFPlayer implements java.io.Serializable {
 		return this.currentHP/this.maxHp;
 	}
 	
+	public void applyDamage(double currentHP) {
+		if((currentHP/this.damageResistance) > maxHp) {
+			this.currentHP = maxHp;
+		} else {
+			if((currentHP/this.damageResistance) > 0) {
+				this.currentHP = (currentHP/this.damageResistance);
+			} else {
+				this.currentHP = 0;
+			}
+		}
+		
+		// Update player UI Health
+		Logging.OutputToPlayer("HP UPDATE: " + this.currentHP + "/" + this.maxHp + " ADJUSTED: " + (20*(getRatio())), Bukkit.getPlayer(id));
+		Bukkit.getPlayer(id).setHealth(20*(getRatio()));
+	}
 	
 	public void setHp(double currentHP) {
 		if(currentHP > maxHp) {

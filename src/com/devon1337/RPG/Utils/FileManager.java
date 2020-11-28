@@ -125,6 +125,31 @@ public class FileManager {
 		}
 	}
 	
+	public static void exportPoint(Point p) {
+		File file = new File(NightFallRPG.getPlugin().getDataFolder() + "/warps/" + p.getType() + "_" + p.getName() + ".nft");
+		
+		fileExists(file);
+		
+		try {
+			FileOutputStream fos = new FileOutputStream(file);
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			p.writeObject(oos);
+			oos.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void importFastTravel() throws IOException {
+		for(File file : new File(NightFallRPG.getPlugin().getDataFolder() + "/warps/").listFiles()) {
+			FileInputStream fis = new FileInputStream(file);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			Point.readObject(ois);
+			
+		}
+	}
+	
 	public static boolean hasPlayedBefore(UUID player) {
 		File file = new File(NightFallRPG.getPlugin().getDataFolder() + "/players/" + player.toString() + "." + extensions[3]);
 		if(file.exists()) {

@@ -11,6 +11,8 @@ import com.devon1337.RPG.NFClasses;
 import com.devon1337.RPG.ActiveAbilities.GlobalSpellbook;
 import com.devon1337.RPG.ActiveAbilities.Spell;
 
+import net.md_5.bungee.api.ChatColor;
+
 public class GroupClass {
 
 	static ArrayList<GroupClass> allClasses = new ArrayList<GroupClass>();
@@ -42,7 +44,7 @@ public class GroupClass {
 		
 			for (Spell s : getEarlySpells()) {
 				if (s != null) {
-				metalore.add(s.getName() + " ~ " + s.getDescription());
+				metalore.add(s.getName() + ChatColor.DARK_PURPLE + " ~ " + s.getDescription());
 				}
 			}
 		meta.addItemFlags(new ItemFlag[] {ItemFlag.HIDE_ATTRIBUTES});

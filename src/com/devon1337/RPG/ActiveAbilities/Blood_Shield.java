@@ -2,6 +2,7 @@ package com.devon1337.RPG.ActiveAbilities;
 
 import java.util.ArrayList;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -9,7 +10,7 @@ import com.devon1337.RPG.NFClasses;
 import com.devon1337.RPG.PassiveAbilities.PassiveType;
 import com.devon1337.RPG.Player.NFPlayer;
 
-public class Blood_Shield extends Spell {
+public class Blood_Shield extends Spell implements ISpell {
 	
 		/**
 	 * 
@@ -17,18 +18,18 @@ public class Blood_Shield extends Spell {
 	private static final long serialVersionUID = 6415646772849009418L;
 	
 		// Predefined Variables
-		static final String Name = "Blood Shield", Description = "Drain the blood of nearby enemies and heal the damage done!";
+		static final String Name = ChatColor.DARK_RED + "Soul Drain", Description = "Drain the soul of nearby enemies";
 		static final NFClasses classReq = NFClasses.MAGE;
 		static final PassiveType[] availPassives = {PassiveType.Lifesteal};
 		static final Material spellIcon = Material.POTION;
 		static final double DamageAmount = 3.0D;
 		static final SpellType spellType = SpellType.GroupCast;
 		
-		public Blood_Shield(int id) {
-			super(Name, Description, id, spellType, spellIcon, 10, 1, classReq, availPassives);
+		public Blood_Shield() {
+			super(Name, Description, spellType, spellIcon, 10, 1, classReq, availPassives);
 		}
 		
-		public static double use(Player sender, ArrayList<Player> targets) {
+		public double use(Player sender, ArrayList<Player> targets) {
 			double DamageDealt = 0;
 			for(Player p : targets) {
 				NFPlayer NFtarget = NFPlayer.getPlayer(p.getUniqueId());
@@ -36,5 +37,11 @@ public class Blood_Shield extends Spell {
 				NFtarget.setHp(NFtarget.getHp()-(DamageAmount/NFtarget.getDamageResistance()));
 			}
 			return DamageDealt;
+		}
+
+		@Override
+		public ISpell getISpell() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 }

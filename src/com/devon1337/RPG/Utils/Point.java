@@ -2,6 +2,7 @@ package com.devon1337.RPG.Utils;
 
 import java.io.IOException;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -45,6 +46,8 @@ public class Point implements java.io.Serializable {
 		this.name = name;
 		this.type = type;
 		setWorld(player.getWorld());
+		
+		FileManager.exportPoint(this);
 	}
 
 	public int getX() {
@@ -102,8 +105,18 @@ public class Point implements java.io.Serializable {
 			stream.writeInt(z);
 			stream.writeFloat(pitch);
 			stream.writeFloat(yaw);
-			stream.writeChars(name);
-			stream.writeChars(type.getName());	
+			stream.writeObject(name);
+			stream.writeObject(type.getName());	
+			stream.writeObject(world.getName());
+	}
+	
+	public static void readObject(java.io.ObjectInputStream stream) throws IOException {
+		try {
+			FastTravel.addWayPoint(new Point(stream.readInt(),stream.readInt(),stream.readInt(),stream.readFloat(),stream.readFloat(),(String) stream.readObject(), NFTType.getType((String) stream.readObject()), Bukkit.getWorld((String) stream.readObject())));
+		} catch (ClassNotFoundException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 }

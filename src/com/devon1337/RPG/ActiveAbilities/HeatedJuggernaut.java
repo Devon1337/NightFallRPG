@@ -12,7 +12,7 @@ import com.devon1337.RPG.NFClasses;
 import com.devon1337.RPG.PassiveAbilities.PassiveType;
 import com.devon1337.RPG.Player.NFPlayer;
 
-public class HeatedJuggernaut extends Spell{
+public class HeatedJuggernaut extends Spell implements ISpell{
 
 	/**
 	 * 
@@ -25,15 +25,23 @@ public class HeatedJuggernaut extends Spell{
 	static final Material spellIcon = Material.IRON_SWORD;
 	static final SpellType spellType = SpellType.GroupCast;
 	
-	public HeatedJuggernaut(int id) {
-		super(Name, Description, id, spellType, spellIcon, 10, 5, classReq, availPassives);
+	public HeatedJuggernaut() {
+		super(Name, Description, spellType, spellIcon, 10, 5, classReq, availPassives);
 	}
 	
-	public static void use(Player player, ArrayList<Player> targets) {
+	public double use(Player player, ArrayList<Player> targets) {
 		for(Player p : targets) {
 			NFPlayer.getPlayer(p.getUniqueId()).setDamageResistance(NFPlayer.getPlayer(p.getUniqueId()).getDamageResistance()-0.4f);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20*5, 1));
 			GlowAPI.setGlowing(player, GlowAPI.Color.WHITE, p);
 		}
+		
+		return 0;
+	}
+
+	@Override
+	public ISpell getISpell() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

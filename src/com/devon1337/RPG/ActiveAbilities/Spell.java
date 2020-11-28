@@ -30,14 +30,15 @@ public abstract class Spell implements java.io.Serializable {
 	Material spellIcon;
 	ItemStack spellItem;
 	SpellType spellType;
+	ISpell spellClasses;
 
 	public static ArrayList<Cooldown> GlobalCooldown = new ArrayList<Cooldown>();
 	PassiveType[] availPassives;
 
-	public Spell(String Name, String Description, int id, SpellType spellType, Material spellIcon, int CooldownTime,
+	public Spell(String Name, String Description, SpellType spellType, Material spellIcon, int CooldownTime,
 			int level, NFClasses spellClass, PassiveType[] availPassives) {
 		this.Name = Name;
-		this.id = id;
+		this.id = GlobalSpellbook.getSpellSize();
 		this.spellType = spellType;
 		this.spellIcon = spellIcon;
 		this.CooldownTime = CooldownTime;
@@ -46,6 +47,7 @@ public abstract class Spell implements java.io.Serializable {
 		this.spellItem = generateItem(this.spellIcon, 1, this);
 		this.spellClass = spellClass;
 		this.availPassives = availPassives;
+		
 		GlobalSpellbook.addSpell(this);
 		Logging.OutputToConsole("Registered: " + Name);
 	}
@@ -64,27 +66,32 @@ public abstract class Spell implements java.io.Serializable {
 				GlobalCooldown.get(i).setTime(GlobalCooldown.get(i).getTime() - 1);
 				updateItem(Bukkit.getPlayer(GlobalCooldown.get(i).getUUID()),
 						generateItem(GlobalCooldown.get(i).getSpell().spellIcon, GlobalCooldown.get(i).getTime(),
-								GlobalCooldown.get(i).getSpell()));
+								GlobalCooldown.get(i).getSpell()), GlobalCooldown.get(i).getTime());
 				
-				Logging.OutputToPlayer("Spell " + GlobalCooldown.get(i).getSpell() + " has " + GlobalCooldown.get(i).getTime() + " seconds remaining.", Bukkit.getPlayer(GlobalCooldown.get(i).getUUID()));
+				Logging.OutputToPlayer("Spell " + GlobalCooldown.get(i).getSpell().Name + " has " + GlobalCooldown.get(i).getTime() + " seconds remaining.", Bukkit.getPlayer(GlobalCooldown.get(i).getUUID()));
 			}
 
 		}
 	}
 
-	public static void updateItem(Player player, ItemStack item) {
-		Logging.OutputToConsole("updating Items");
+	public static void updateItem(Player player, ItemStack item, int time) {
+		
 		for (int i = 0; i < 3; i++) {
-			if (player.getInventory().getItem(i) != null
-					&& player.getInventory().getItem(i).getItemMeta().getDisplayName() == item.getItemMeta()
-							.getDisplayName()
-					&& player.getInventory().getItem(i).getItemMeta().getLore() == item.getItemMeta().getLore()) {
-				player.getInventory().setItem(i, item);
+			Logging.OutputToConsole("Item: " + item.getType() + " Name: " + item.getItemMeta().getDisplayName());
+			Logging.OutputToConsole("Name: " + player.getInventory().getItem(i).getItemMeta().getDisplayName());
+			if (player.getInventory().getItem(i) != null && player.getInventory().getItem(i).getItemMeta().getDisplayName().equals(item.getItemMeta().getDisplayName())) {
+				player.getInventory().setItem(i, generateCooldownItem(item.getType(), time, item.getItemMeta()));
 			}
 		}
 
 	}
 
+	public static ItemStack generateCooldownItem(Material Item, int count, ItemMeta meta) {
+		ItemStack is = new ItemStack(Item, count);
+		is.setItemMeta(meta);
+		return is;
+	}
+	
 	public static ItemStack generateItem(Material Item, int count, Spell s) {
 		ItemStack item = new ItemStack(Item, count);
 		ItemMeta meta = item.getItemMeta();
@@ -100,6 +107,14 @@ public abstract class Spell implements java.io.Serializable {
 		return item;
 	}
 
+	public void setISpell(ISpell spell) {
+		this.spellClasses = spell;
+	}
+	
+	public ISpell getSpellMethod() {
+		return this.spellClasses;
+	}
+	
 	public NFClasses getClassReq() {
 		return this.spellClass;
 	}
@@ -149,9 +164,13 @@ public abstract class Spell implements java.io.Serializable {
 		return this.Name;
 	}
 
-	@SuppressWarnings("static-access")
 	public static void CastSelf(Spell s, Player p) {
-		s.runAbility(s, p, null);
+		s.getSpellMethod().use(p, null);
+		//s.runAbility(s, p, null);
+	}
+	
+	public void runSpelltest(Player player, ArrayList<Player> targets) {
+		this.spellClasses.use(player, targets);
 	}
 
 	public static void CastAttack(Spell s, Player p, Player t) {
@@ -161,22 +180,26 @@ public abstract class Spell implements java.io.Serializable {
 		} else {
 			tempPlayer.add(t);
 		}
-
-		runAbility(s, p, tempPlayer);
+		
+		s.getSpellMethod().use(p, tempPlayer);
+		
+		//runAbility(s, p, tempPlayer);
 	}
 
 	public static void CastGroup(Spell s, Player p) {
 		ArrayList<Player> tempPlayer = new AreaMap(p.getWorld(), p.getLocation(), 10).getHostilePlayers(p);
-		runAbility(s, p, tempPlayer);
+		
+		s.getSpellMethod().use(p, tempPlayer);
+		
+		//runAbility(s, p, tempPlayer);
 	}
 
 	@SuppressWarnings("incomplete-switch")
 	public static void start(Spell s, Player p) {
 		Cooldown cd = getPlayerCooldown(p);
-		if(cd == null) {
+		if(cd == null || cd.getSpell() != s) {
 		switch (s.getSpellType()) {
 		case SkillShot:
-			Logging.OutputToConsole("Starting Cast");
 			new Raycast(p.getUniqueId(), s);
 			break;
 		case GroupCast:
@@ -199,63 +222,67 @@ public abstract class Spell implements java.io.Serializable {
 		return null;
 	}
 
+	
+	/*
 	// Stage one of ability use
 	@SuppressWarnings("deprecation")
 	public static void runAbility(Spell s, Player player, ArrayList<Player> targets) {
 		
 		Double damageDone = 0.0;
-		
+		Logging.OutputToConsole("Spell: " + s.Name + " Player: " + player.getName());
 		GlobalCooldown.add(new Cooldown(player.getUniqueId(), s, s.getCooldown()));
-		switch (s.getName()) {
-		case "Assassinate":
-			Assassinate.use(player, targets.get(0));
+		switch (s.getId()) {
+		case 0:
+			
+			//Assassinate.use(player, targets);
 			break;
-		case "Blood Shield":
+		case 1:
 			damageDone = Blood_Shield.use(player, targets);
 			break;
-		case "Charge":
+		case 2:
 			Charge.use(player);
 			break;
-		case "Confusion":
+		case 3:
 			Confusion.use(player, targets.get(0));
 			break;
-		case "Entanglement":
+		case 4:
 			Entanglement.use(player, targets.get(0));
 			break;
-		case "Fireball":
-			damageDone = Fireball.use(player, targets.get(0));
+		case 5:
+			//new NFParticle(player);
+			damageDone = Fireball.use(player, targets);
 			break;
-		case "Heated Juggernaut":
+		case 6:
 			HeatedJuggernaut.use(player, targets);
 			break;
-		case "Mark of the Wild":
+		case 10:
 			MOTW.use(player);
 			break;
-		case "Nightmare Slasher":
+		case 8:
 			player.setItemInHand(NightmareSlasher.getWeapon());
 			break;
-		case "Dream Drain":
+		case 9:
 
 			break;
-		case "Rejuvenate":
+		case 7:
 			Rejuvenate.use(player, targets);
 			break;
-		case "Shield Bash":
+		case 11:
 			Shield_Bash.use(player, targets.get(0));
 			break;
-		case "Shield Slam":
+		case 12:
 			Shield_Slam.use(player, targets);
 			break;
-		case "Starfire":
+		case 13:
 			Starfire.use(player, targets);
 			break;
-		case "Tranquility":
+		case 14:
 			Tranquility.use(player, targets.get(0));
 			break;
-		case "Vanish":
+		case 15:
 			Vanish.use(player);
 			break;
-		case "Wrath":
+		case 16:
 			damageDone = Wrath.use(player, targets.get(0));
 			break;
 		}
@@ -266,7 +293,7 @@ public abstract class Spell implements java.io.Serializable {
 		
 
 	}
-
+*/
 	
 	// Stage two of ability use
 	public static void runPassive(Spell s, NFPlayer player, double DamageAmount) {

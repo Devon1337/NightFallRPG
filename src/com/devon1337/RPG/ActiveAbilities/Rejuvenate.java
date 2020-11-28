@@ -10,32 +10,38 @@ import org.bukkit.potion.PotionEffectType;
 import com.devon1337.RPG.NFClasses;
 import com.devon1337.RPG.PassiveAbilities.PassiveType;
 
-public class Rejuvenate extends Spell{
+public class Rejuvenate extends Spell implements ISpell{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -748517731224684592L;
-
-	double hpReq = 3.0f;
 	
 	// Predefined Variables
 	static final String Name = "Rejuvenate", Description = "Heal your party!";
 	static final NFClasses classReq = NFClasses.DRUID;
 	static final PassiveType[] availPassives = {null};
 	static final Material spellIcon = Material.IRON_SWORD;
-	static final PotionEffect RejuEffect = new PotionEffect(PotionEffectType.REGENERATION, 10, 1);
+	static final PotionEffect RejuEffect = new PotionEffect(PotionEffectType.REGENERATION, 20*3, 5);
 	static final SpellType spellType = SpellType.GroupCast;
 	
-	public Rejuvenate(int id) {
-		super(Name, Description, id, spellType, spellIcon, 10, 1, classReq, availPassives);
+	public Rejuvenate() {
+		super(Name, Description, spellType, spellIcon, 10, 1, classReq, availPassives);
 	}
 	
-	public static void use(Player player, ArrayList<Player> targets) {
+	public double use(Player player, ArrayList<Player> targets) {
 		
 		for(Player p : targets) {
 			p.addPotionEffect(RejuEffect);
 		}
 		
+		return 0;
+		
+	}
+
+	@Override
+	public ISpell getISpell() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

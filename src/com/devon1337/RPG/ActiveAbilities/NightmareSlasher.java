@@ -18,7 +18,7 @@ import com.devon1337.RPG.NFClasses;
 import com.devon1337.RPG.NightFallRPG;
 import com.devon1337.RPG.PassiveAbilities.PassiveType;
 
-public class NightmareSlasher extends Spell{
+public class NightmareSlasher extends Spell implements ISpell{
 
 	/**
 	 * 
@@ -32,8 +32,8 @@ public class NightmareSlasher extends Spell{
 	static final NamespacedKey key = new NamespacedKey(NightFallRPG.getPlugin(), "nm_slasher");
 	static final SpellType spellType = SpellType.WeaponArt;
 	
-	public NightmareSlasher(int id) {
-		super(Name, Description, id, spellType, spellIcon, 10, 1, classReq, availPassives);
+	public NightmareSlasher() {
+		super(Name, Description, spellType, spellIcon, 10, 1, classReq, availPassives);
 	}
 	
 	public static ItemStack getWeapon() {
@@ -71,5 +71,17 @@ public class NightmareSlasher extends Spell{
 	
 	public static NamespacedKey getKey() {
 		return key;
+	}
+
+	@Override
+	public double use(Player player, ArrayList<Player> targets) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public ISpell getISpell() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

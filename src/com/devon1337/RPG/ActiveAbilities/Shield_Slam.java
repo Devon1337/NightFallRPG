@@ -10,7 +10,7 @@ import com.devon1337.RPG.NFClasses;
 import com.devon1337.RPG.NightFallRPG;
 import com.devon1337.RPG.PassiveAbilities.PassiveType;
 
-public class Shield_Slam extends Spell{
+public class Shield_Slam extends Spell implements ISpell{
 	
 	/**
 	 * 
@@ -23,11 +23,11 @@ public class Shield_Slam extends Spell{
 	static final Material spellIcon = Material.IRON_SWORD;
 	static final SpellType spellType = SpellType.GroupCast;
 	
-	public Shield_Slam(int id) {
-		super(Name, Description, id, spellType, spellIcon, 10, 1, classReq, availPassives);
+	public Shield_Slam() {
+		super(Name, Description, spellType, spellIcon, 10, 1, classReq, availPassives);
 	}
 	
-	public static void use(Player player, ArrayList<Player> targets) {
+	public double use(Player player, ArrayList<Player> targets) {
 		float[] OriginalSpeed = new float[targets.size()];
 		for(int i = 0; i < targets.size(); i++) {
 			OriginalSpeed[i] = targets.get(i).getWalkSpeed();
@@ -42,5 +42,13 @@ public class Shield_Slam extends Spell{
 				}
 			}
 		}, 20L);
+		
+		return 0;
+	}
+
+	@Override
+	public ISpell getISpell() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

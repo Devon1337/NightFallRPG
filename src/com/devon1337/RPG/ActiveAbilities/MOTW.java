@@ -1,5 +1,7 @@
 package com.devon1337.RPG.ActiveAbilities;
 
+import java.util.ArrayList;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -8,7 +10,7 @@ import org.bukkit.potion.PotionEffectType;
 import com.devon1337.RPG.NFClasses;
 import com.devon1337.RPG.PassiveAbilities.PassiveType;
 
-public class MOTW extends Spell{
+public class MOTW extends Spell implements ISpell{
 	
 	/**
 	 * 
@@ -29,13 +31,26 @@ public class MOTW extends Spell{
 	static final Material spellIcon = Material.BROWN_DYE;
 	static final SpellType spellType = SpellType.QuickCast;
 
-	public MOTW(int id) {
-		super(Name, Description, id, spellType, spellIcon, 10, 5, classReq, availPassives);
+	public MOTW() {
+		super(Name, Description, spellType, spellIcon, 10, 5, classReq, availPassives);
 	}
 
 	public static void use(Player player) {
+		
+	}
+
+	@Override
+	public double use(Player player, ArrayList<Player> targets) {
+		
 		for (PotionEffect pe : effects) {
 			player.addPotionEffect(pe);
 		}
+		return 0;
+	}
+
+	@Override
+	public ISpell getISpell() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
