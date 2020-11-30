@@ -40,7 +40,7 @@ import com.devon1337.RPG.Commands.NFTest;
 import com.devon1337.RPG.Commands.NFTravel;
 import com.devon1337.RPG.Commands.NFUpdateDialog;
 import com.devon1337.RPG.Commands.OpenSpellBook;
-import com.devon1337.RPG.Commands.Party;
+import com.devon1337.RPG.Commands.NFParty;
 import com.devon1337.RPG.Commands.PickClass;
 import com.devon1337.RPG.Commands.Reply;
 import com.devon1337.RPG.Commands.Roll;
@@ -239,7 +239,7 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		getCommand("spellbook").setExecutor((CommandExecutor) new OpenSpellBook());
 		getCommand("roll").setExecutor((CommandExecutor) new Roll());
 		getCommand("trade").setExecutor((CommandExecutor) new Trade());
-		getCommand("nfparty").setExecutor((CommandExecutor) new Party());
+		getCommand("nfparty").setExecutor((CommandExecutor) new NFParty());
 		getCommand("nfquest").setExecutor((CommandExecutor) new NFQuest());
 		getCommand("fl").setExecutor((CommandExecutor) new FLCommand());
 		getCommand("nftest").setExecutor((CommandExecutor) new NFTest());
