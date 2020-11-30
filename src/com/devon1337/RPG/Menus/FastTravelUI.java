@@ -1,9 +1,13 @@
 package com.devon1337.RPG.Menus;
 
+import com.devon1337.RPG.Player.NFPlayer;
 import com.devon1337.RPG.Utils.FastTravel;
+import com.devon1337.RPG.Utils.IMenu;
 import com.devon1337.RPG.Utils.InventoryAssistant;
+import com.devon1337.RPG.Utils.Menu;
 import com.devon1337.RPG.Utils.NFTType;
 import java.util.ArrayList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -14,16 +18,19 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class FastTravelUI implements InventoryHolder {
-	private final Inventory FTUI;
-	public final String TITLE = ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Fast Travel...";
+public class FastTravelUI extends Menu implements InventoryHolder, IMenu {
 
-	public FastTravelUI(Player player) {
-		this.FTUI = Bukkit.createInventory(this, InventoryAssistant.getInventorySize(1), this.TITLE);
-		init_items(player);
+	private Inventory FTUI;
+	public static String Title = ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Fast Travel...";
+	int Page;
+
+	public FastTravelUI() {
+		super(Title);
 	}
 
+	// Creates Items used for GUI
 	public void init_items(Player player) {
+		this.FTUI = Bukkit.createInventory(this, InventoryAssistant.getInventorySize(3), FastTravelUI.Title);
 		for (int i = 0; i < FastTravel.grabList().size(); i++) {
 			if ((player.hasPermission("nightfall.nftravel.druid")
 					&& FastTravel.getWayPoint(i).getType() == NFTType.Druid)
@@ -59,7 +66,29 @@ public class FastTravelUI implements InventoryHolder {
 		return item;
 	}
 
+	@Override
+	public void Response(NFPlayer player, int slot) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public int getPage() {
+		// TODO Auto-generated method stub
+		return this.Page;
+	}
+
+	@Override
+	public Inventory open(Player player) {
+		init_items(player);
+		return this.FTUI;
+	}
+
+	public IMenu getIMenu() {
+		return (IMenu) this;
+	}
+	
 	public Inventory getInventory() {
 		return this.FTUI;
 	}
+
 }

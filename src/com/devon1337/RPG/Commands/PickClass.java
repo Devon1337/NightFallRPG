@@ -1,6 +1,8 @@
 package com.devon1337.RPG.Commands;
 
-import com.devon1337.RPG.Menus.SelectClass;
+import com.devon1337.RPG.Player.NFPlayer;
+import com.devon1337.RPG.Utils.Menu;
+
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -13,7 +15,8 @@ public class PickClass implements CommandExecutor {
 		Player player = (Player) sender;
 		player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BIT, 1.0F, 1.3F);
 		if(sender instanceof Player) {
-			new SelectClass(player);
+			Menu menu = Menu.getMenu(4);
+			menu.openNFInventory(NFPlayer.getPlayer(player.getUniqueId()));
 			return true;
 		}
 		return false;

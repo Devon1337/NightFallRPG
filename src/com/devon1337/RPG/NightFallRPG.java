@@ -47,6 +47,11 @@ import com.devon1337.RPG.Commands.Roll;
 import com.devon1337.RPG.Commands.Trade;
 import com.devon1337.RPG.Debugging.Logging;
 import com.devon1337.RPG.Menus.CreativeObjectMenu;
+import com.devon1337.RPG.Menus.FastTravelUI;
+import com.devon1337.RPG.Menus.GameMasterMenu;
+import com.devon1337.RPG.Menus.LevelUpMenu;
+import com.devon1337.RPG.Menus.SelectClass;
+import com.devon1337.RPG.Menus.SpellBook;
 import com.devon1337.RPG.NPC.NPC;
 import com.devon1337.RPG.NPC.WorldController;
 import com.devon1337.RPG.Objects.BlankObject;
@@ -232,6 +237,16 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		// Menu Loading
 		CreativeObjectMenu com = new CreativeObjectMenu();
 		Menu.getMenu(0).setIMenu(com.getIMenu());
+		FastTravelUI ftui = new FastTravelUI();
+		Menu.getMenu(1).setIMenu(ftui.getIMenu());
+		GameMasterMenu gmm = new GameMasterMenu();
+		Menu.getMenu(2).setIMenu(gmm.getIMenu());
+		LevelUpMenu lum = new LevelUpMenu();
+		Menu.getMenu(3).setIMenu(lum.getIMenu());
+		SelectClass sc = new SelectClass();
+		Menu.getMenu(4).setIMenu(sc.getIMenu());
+		SpellBook sbm = new SpellBook();
+		Menu.getMenu(5).setIMenu(sbm.getIMenu());
 
 		getServer().getPluginManager().registerEvents(this, (Plugin) this);
 		getCommand("class").setExecutor((CommandExecutor) new PickClass());

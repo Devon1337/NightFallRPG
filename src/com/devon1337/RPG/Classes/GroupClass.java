@@ -89,4 +89,8 @@ public class GroupClass {
 		return allClasses;
 	}
 	
+	public static GroupClass getClass(int index) {
+		return allClasses.get(index);
+	}
+	
 }
