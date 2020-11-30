@@ -12,7 +12,6 @@ import com.devon1337.RPG.ActiveAbilities.GlobalSpellbook;
 import com.devon1337.RPG.ActiveAbilities.Spell;
 import com.devon1337.RPG.Classes.GroupClass;
 import com.devon1337.RPG.Debugging.Logging;
-import com.devon1337.RPG.Menus.LevelUpMenu;
 import com.devon1337.RPG.PassiveAbilities.Passive;
 import com.devon1337.RPG.PassiveAbilities.PassiveType;
 import com.devon1337.RPG.Utils.Menu;
@@ -183,7 +182,7 @@ public class NFPlayer implements java.io.Serializable {
 	
 	public void setLevel(int Level) {
 		this.Level = Level;
-		new LevelUpMenu(Bukkit.getPlayer(id));
+		Menu.getMenu(3).openNFInventory(this);
 	}
 	
 	public void addXp(int amount) {	

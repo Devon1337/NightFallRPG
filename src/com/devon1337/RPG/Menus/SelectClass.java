@@ -5,56 +5,63 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
 
 import com.devon1337.RPG.Classes.GroupClass;
-import com.devon1337.RPG.Debugging.Logging;
 import com.devon1337.RPG.Player.NFPlayer;
+import com.devon1337.RPG.Utils.IMenu;
 import com.devon1337.RPG.Utils.InventoryAssistant;
+import com.devon1337.RPG.Utils.Menu;
 
-// Used for selecting the players class
-public class SelectClass implements InventoryHolder {
-	
-	public static final String TITLE = ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Select a Class";
-	private Inventory scMenu = Bukkit.createInventory(this, InventoryAssistant.getInventorySize(1),
-			TITLE);
-	Player player;
+public class SelectClass extends Menu implements InventoryHolder, IMenu {
+
+	public static String Title = ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Select a Class";
+	private Inventory SC;
+
 	@Override
 	public Inventory getInventory() {
 		// TODO Auto-generated method stub
-		return scMenu;
+		return SC;
+	}
+
+	public IMenu getIMenu() {
+		return (IMenu) this;
 	}
 	
-	public SelectClass(Player player) {
-		this.player = player;
-		init_items();
-		player.openInventory(this.scMenu);
+	public SelectClass() {
+		super(Title);
 	}
 
 	public void init_items() {
-		int i = 1;
-		for(GroupClass gc : GroupClass.getClasses()) {
-			scMenu.setItem(i, gc.getItem());
+		int i = 0;
+		for (GroupClass gc : GroupClass.getClasses()) {
+			SC.setItem(i, gc.getItem());
 			i++;
 		}
-		
+
 	}
-	
-	public static String getTitle() {
-		return TITLE;
+
+	public String getTitle() {
+		return Title;
 	}
-	
-	public static void response(ItemStack selectedItem, Player player) {
-		for(GroupClass gc : GroupClass.getClasses()) {
-			Logging.OutputToPlayer("Do the names equal?: " + selectedItem.getItemMeta().getDisplayName().equals(gc.getItem().getItemMeta().getDisplayName()), player);
-			if(selectedItem.getItemMeta().getDisplayName().equals(gc.getItem().getItemMeta().getDisplayName())) {
-				Logging.OutputToPlayer("You have selected the class: " + gc.getName(), player);
-				NFPlayer.getPlayer(player.getUniqueId()).addClass(gc);
-				player.closeInventory();
-			}
-		}
+
+	@Override
+	public void Response(NFPlayer player, int slot) {
+		// TODO Auto-generated method stub
+		player.addClass(GroupClass.getClass(slot));
+		player.getPlayerFromUUID().closeInventory();
 	}
-	
-	
-	
+
+	@Override
+	public int getPage() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public Inventory open(Player player) {
+		SC = Bukkit.createInventory(this, InventoryAssistant.getInventorySize(1), Title);
+		init_items();
+		return this.SC;
+	}
+
 }

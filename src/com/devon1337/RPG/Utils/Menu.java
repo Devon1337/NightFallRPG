@@ -3,6 +3,7 @@ package com.devon1337.RPG.Utils;
 import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -27,7 +28,13 @@ public abstract class Menu {
 		Player p1 = Bukkit.getPlayer(player.getUUID());
 		player.setMenu(this);
 		this.Inv = IInv.open(Bukkit.getPlayer(player.getUUID()));
-		p1.openInventory(Inv);
+		
+		// Checks if the player has permission the enter the menu!
+		if (this.Inv != null) {
+			p1.openInventory(Inv);
+		} else {
+			p1.sendMessage(ChatColor.DARK_RED + "You do not have access to this menu!");
+		}
 	}
 	
 	public void runResponse(NFPlayer player, int slot) {
