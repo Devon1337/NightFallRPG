@@ -15,7 +15,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 
 public class RogueClassBook extends NFObject {
 
-	static String Name = "Rogue Class Book";
+	static String Name = "Fuck you chad";
 
 	static String Description = "Become a Rogue!";
 	
