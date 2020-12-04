@@ -28,6 +28,7 @@ import com.devon1337.RPG.Classes.Rogue;
 import com.devon1337.RPG.Classes.Warrior;
 import com.devon1337.RPG.Commands.CheckLevel;
 import com.devon1337.RPG.Commands.FLCommand;
+import com.devon1337.RPG.Commands.NFBanMenu;
 import com.devon1337.RPG.Commands.NFGetDialog;
 import com.devon1337.RPG.Commands.NFInteractWith;
 import com.devon1337.RPG.Commands.NFListNPC;
@@ -36,6 +37,7 @@ import com.devon1337.RPG.Commands.NFObjects;
 import com.devon1337.RPG.Commands.NFPrint;
 import com.devon1337.RPG.Commands.NFQuest;
 import com.devon1337.RPG.Commands.NFRaidMaker;
+import com.devon1337.RPG.Commands.NFTeleport;
 import com.devon1337.RPG.Commands.NFTest;
 import com.devon1337.RPG.Commands.NFTravel;
 import com.devon1337.RPG.Commands.NFUpdateDialog;
@@ -46,6 +48,7 @@ import com.devon1337.RPG.Commands.Reply;
 import com.devon1337.RPG.Commands.Roll;
 import com.devon1337.RPG.Commands.Trade;
 import com.devon1337.RPG.Debugging.Logging;
+import com.devon1337.RPG.Menus.BanMenu;
 import com.devon1337.RPG.Menus.CreativeObjectMenu;
 import com.devon1337.RPG.Menus.FastTravelUI;
 import com.devon1337.RPG.Menus.GameMasterMenu;
@@ -247,6 +250,8 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		Menu.getMenu(4).setIMenu(sc.getIMenu());
 		SpellBook sbm = new SpellBook();
 		Menu.getMenu(5).setIMenu(sbm.getIMenu());
+		BanMenu bm = new BanMenu();
+		Menu.getMenu(6).setIMenu(bm.getIMenu());
 
 		getServer().getPluginManager().registerEvents(this, (Plugin) this);
 		getCommand("class").setExecutor((CommandExecutor) new PickClass());
@@ -268,6 +273,8 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		getCommand("nfraid").setExecutor((CommandExecutor) new NFRaidMaker());
 		getCommand("nfinteractwith").setExecutor((CommandExecutor) new NFInteractWith());
 		getCommand("nfobjects").setExecutor((CommandExecutor) new NFObjects());
+		getCommand("tp").setExecutor((CommandExecutor) new NFTeleport());
+		getCommand("banmenu").setExecutor((CommandExecutor) new NFBanMenu());
 		
 		FileManager.exportNpc();
 		FileManager.exportDialog();
