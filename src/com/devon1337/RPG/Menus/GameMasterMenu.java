@@ -1,9 +1,12 @@
 package com.devon1337.RPG.Menus;
 
+import com.devon1337.RPG.Player.NFPlayer;
+import com.devon1337.RPG.Utils.IMenu;
 import com.devon1337.RPG.Utils.InventoryAssistant;
+import com.devon1337.RPG.Utils.Menu;
+
 import java.util.ArrayList;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -12,16 +15,18 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class GameMasterMenu implements InventoryHolder {
-	@SuppressWarnings("unused")
-	private final Inventory GMUI;
+public class GameMasterMenu extends Menu implements InventoryHolder, IMenu {
+	
+	private Inventory GMUI;
+	public static String Title = "Welcome GameMaster";
+	int Page;
 
-	public GameMasterMenu(Player player) {
-		this.GMUI = Bukkit.createInventory(this, InventoryAssistant.getInventorySize(1),
-				ChatColor.DARK_PURPLE + "Welcome " + player.getName());
+	public GameMasterMenu() {
+		super(Title);
 	}
 
-	public void init_items(Player player) {
+	public void init_items() {
+		this.GMUI = Bukkit.createInventory(this, InventoryAssistant.getInventorySize(3), GameMasterMenu.Title);
 	}
 
 	@SuppressWarnings("unused")
@@ -47,5 +52,31 @@ public class GameMasterMenu implements InventoryHolder {
 
 	public Inventory getInventory() {
 		return null;
+	}
+	
+	public IMenu getIMenu() {
+		return (IMenu) this;
+	}
+
+	@Override
+	public void Response(NFPlayer player, int slot) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getPage() {
+		// TODO Auto-generated method stub
+		return this.Page;
+	}
+
+	@Override
+	public Inventory open(Player player) {
+		if(player.isOp()) {
+			init_items();
+			return this.GMUI;
+		}
+		return null;
+		
 	}
 }

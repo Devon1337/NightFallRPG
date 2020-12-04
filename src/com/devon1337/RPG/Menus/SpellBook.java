@@ -6,7 +6,10 @@ import com.devon1337.RPG.Debugging.Logging;
 import com.devon1337.RPG.NFClasses;
 import com.devon1337.RPG.Player.NFPlayer;
 import com.devon1337.RPG.Player.PlayerUtils;
+import com.devon1337.RPG.Utils.IMenu;
 import com.devon1337.RPG.Utils.InventoryAssistant;
+import com.devon1337.RPG.Utils.Menu;
+
 import java.util.ArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,21 +21,22 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class SpellBook implements InventoryHolder {
-	private Inventory spellBook;
-	public final String TITLE = ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Spell Book";
+public class SpellBook extends Menu implements InventoryHolder, IMenu {
+
+	private Inventory SB;
+	public static String Title = ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Spell Book";
+	int Pages;
+
 	public PlayerUtils Putils = new PlayerUtils();
 	public boolean assignMode = false;
 
-	public SpellBook(Player player) {
-		this.spellBook = Bukkit.createInventory(this, InventoryAssistant.getInventorySize(3), this.TITLE);
-		init_items(NFPlayer.getPlayer(player.getUniqueId()).getPlayerClass(), player);
-		player.openInventory(this.spellBook);
+	public SpellBook() {
+		super(Title);
 	}
 
 	@SuppressWarnings("deprecation")
 	public void init_items(NFClasses classes, Player player) {
-		this.spellBook.clear();
+		this.SB.clear();
 		int i = 0;
 		for (Spell s : GlobalSpellbook.getSpells()) {
 			Logging.OutputToPlayer("Spell Name:" + s.getName(), player);
@@ -40,15 +44,15 @@ public class SpellBook implements InventoryHolder {
 			Logging.OutputToPlayer("Spell Level:" + s.getLevel(), player);
 			Logging.OutputToPlayer("Player Class:" + NFPlayer.getPlayer(player.getUniqueId()).getPlayerClass(), player);
 			Logging.OutputToPlayer("Player Level:" + NFPlayer.getPlayer(player.getUniqueId()).getLevel(), player);
-			if(s.getClassReq() == classes && s.getLevel() == NFPlayer.getPlayer(player.getUniqueId()).getLevel()) {
+			if (s.getClassReq() == classes && s.getLevel() == NFPlayer.getPlayer(player.getUniqueId()).getLevel()) {
 				Logging.OutputToPlayer("Adding spell to spellbook", player);
-				this.spellBook.setItem(i, s.getItem());
+				this.SB.setItem(i, s.getItem());
 				i++;
 			}
-			
+
 		}
 
-		this.spellBook.setItem(18, createGuiItem(Material.LEGACY_BOOK_AND_QUILL, 1, "Edit Spells", new String[0]));
+		this.SB.setItem(18, createGuiItem(Material.LEGACY_BOOK_AND_QUILL, 1, "Edit Spells", new String[0]));
 	}
 
 	public void assignSpells(Player player, int slot, NFClasses classes) {
@@ -83,10 +87,35 @@ public class SpellBook implements InventoryHolder {
 	}
 
 	public void openInventory(Player player) {
-		player.openInventory(this.spellBook);
+		player.openInventory(this.SB);
 	}
 
 	public Inventory getInventory() {
 		return null;
+	}
+	
+	public IMenu getIMenu() {
+		return (IMenu) this;
+	}
+
+	@Override
+	public void Response(NFPlayer player, int slot) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public int getPage() {
+		// TODO Auto-generated method stub
+		return Pages;
+	}
+
+	@Override
+	public Inventory open(Player player) {
+		// TODO Auto-generated method stub
+		SB = Bukkit.createInventory(this, InventoryAssistant.getInventorySize(3), Title);
+		NFPlayer p2 = NFPlayer.getPlayer(player.getUniqueId());
+		init_items(p2.getPlayerClass(), player);
+		return this.SB;
 	}
 }

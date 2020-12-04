@@ -1,6 +1,8 @@
 package com.devon1337.RPG.Commands;
 
-import com.devon1337.RPG.Menus.SpellBook;
+import com.devon1337.RPG.Player.NFPlayer;
+import com.devon1337.RPG.Utils.Menu;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -8,9 +10,13 @@ import org.bukkit.entity.Player;
 
 public class OpenSpellBook implements CommandExecutor {
 
-	@SuppressWarnings("unused")
 	public boolean onCommand(CommandSender sender, Command cmd, String arg, String[] args) {
-		SpellBook spellbook = new SpellBook((Player) sender);
+		
+		Player p1 = (Player) sender;
+		NFPlayer player = NFPlayer.getPlayer(p1.getUniqueId());
+		if (player != null) {
+			Menu.getMenu(5).openNFInventory(player);
+		}
 		return true;
 	}
 }
