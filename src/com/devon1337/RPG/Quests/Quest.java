@@ -1,15 +1,48 @@
 package com.devon1337.RPG.Quests;
 
-import com.devon1337.RPG.Commands.NFQuest;
-import com.devon1337.RPG.Player.NFPlayer;
-import com.devon1337.RPG.Quests.Exceptions.QuestIDInUse;
-import java.util.UUID;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Sound;
-import org.bukkit.entity.Player;
+import java.util.ArrayList;
+
+import lombok.Getter;
+import lombok.Setter;
 
 public abstract class Quest {
+	
+	@Getter @Setter
+	String Name, Description;
+	
+	@Getter
+	int QuestID, xpAmount, goldAmount;
+	
+	@Getter @Setter
+	int CurrentStep;
+	
+	@Getter
+	ArrayList<Step> steps;
+	
+	@Getter @Setter
+	ArrayList<EventFlags> flags = new ArrayList<EventFlags>();
+	
+	@Getter @Setter
+	QuestStatus status;
+	
+	@Getter
+	static ArrayList<Quest> allQuests = new ArrayList<Quest>();
+	
+	public Quest(String Name, String Description, int xpAmount, int goldAmount, ArrayList<Step> steps, ArrayList<EventFlags> flags, QuestStatus status) {
+		this.Name = Name;
+		this.Description = Description;
+		this.xpAmount = xpAmount;
+		this.goldAmount = goldAmount;
+		this.steps = steps;
+		this.flags = flags;
+		this.status = status;
+		this.QuestID = allQuests.size();
+		CurrentStep = 0;
+		
+		allQuests.add(this);
+	}
+	
+	/*
 	public UUID player;
 	public int Status;
 	public int QuestID;
@@ -111,4 +144,6 @@ public abstract class Quest {
 	public int getStatus() {
 		return this.Status;
 	}
+	
+	*/
 }

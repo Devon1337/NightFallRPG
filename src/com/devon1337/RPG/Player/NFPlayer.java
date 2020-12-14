@@ -14,6 +14,7 @@ import com.devon1337.RPG.Classes.GroupClass;
 import com.devon1337.RPG.Debugging.Logging;
 import com.devon1337.RPG.PassiveAbilities.Passive;
 import com.devon1337.RPG.PassiveAbilities.PassiveType;
+import com.devon1337.RPG.Quests.Quest;
 import com.devon1337.RPG.Utils.Menu;
 
 
@@ -34,6 +35,7 @@ public class NFPlayer implements java.io.Serializable {
 	double currentHP, maxHp = 20;
 	Spell[] curSpells = new Spell[3];
 	ArrayList<Passive> curPassive = new ArrayList<Passive>();
+	ArrayList<Quest> currentQuests = new ArrayList<Quest>();
 	
 	// Data Retention
 	private static ArrayList<NFPlayer> globalPlayers = new ArrayList<NFPlayer>();
