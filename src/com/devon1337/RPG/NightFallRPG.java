@@ -28,7 +28,6 @@ import com.devon1337.RPG.Classes.Rogue;
 import com.devon1337.RPG.Classes.Warrior;
 import com.devon1337.RPG.Commands.CheckLevel;
 import com.devon1337.RPG.Commands.FLCommand;
-import com.devon1337.RPG.Commands.NFBanMenu;
 import com.devon1337.RPG.Commands.NFGetDialog;
 import com.devon1337.RPG.Commands.NFInteractWith;
 import com.devon1337.RPG.Commands.NFListNPC;
@@ -37,7 +36,6 @@ import com.devon1337.RPG.Commands.NFObjects;
 import com.devon1337.RPG.Commands.NFPrint;
 import com.devon1337.RPG.Commands.NFQuest;
 import com.devon1337.RPG.Commands.NFRaidMaker;
-import com.devon1337.RPG.Commands.NFTeleport;
 import com.devon1337.RPG.Commands.NFTest;
 import com.devon1337.RPG.Commands.NFTravel;
 import com.devon1337.RPG.Commands.NFUpdateDialog;
@@ -48,7 +46,6 @@ import com.devon1337.RPG.Commands.Reply;
 import com.devon1337.RPG.Commands.Roll;
 import com.devon1337.RPG.Commands.Trade;
 import com.devon1337.RPG.Debugging.Logging;
-import com.devon1337.RPG.Menus.BanMenu;
 import com.devon1337.RPG.Menus.CreativeObjectMenu;
 import com.devon1337.RPG.Menus.FastTravelUI;
 import com.devon1337.RPG.Menus.GameMasterMenu;
@@ -67,10 +64,10 @@ import com.devon1337.RPG.PassiveAbilities.Lifesteal;
 import com.devon1337.RPG.Player.DatabaseAccess;
 import com.devon1337.RPG.Player.NFPlayer;
 import com.devon1337.RPG.Player.PlayerUtils;
-import com.devon1337.RPG.Quests.NavigationQuest;
-import com.devon1337.RPG.Quests.PVPQuest;
-import com.devon1337.RPG.Quests.QuestTracker;
-import com.devon1337.RPG.Quests.Exceptions.QuestIDInUse;
+import com.devon1337.RPG.Quests.EventFlags;
+import com.devon1337.RPG.Quests.Step;
+import com.devon1337.RPG.Quests.StepStatus;
+import com.devon1337.RPG.Quests.TestQuest;
 import com.devon1337.RPG.Utils.DialogueSystem;
 import com.devon1337.RPG.Utils.FileManager;
 import com.devon1337.RPG.Utils.FriendsList;
@@ -85,7 +82,6 @@ import com.devon1337.RPG.WeaponEffects.Effects.Prefixes;
 import com.devon1337.RPG.WeaponEffects.Effects.WType;
 import com.devon1337.RPG.WeaponEffects.Effects.Prefix.Minor;
 import com.devon1337.RPG.WeaponEffects.Effects.Type.Frozen;
-//import com.devon1337.RPG.Utils.Raycast.Raycast;
 import com.devon1337.RPG.Utils.Raycast.RaycastHitEvent;
 import com.devon1337.RPG.raid.MatchmakingController;
 
@@ -131,8 +127,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 public class NightFallRPG extends JavaPlugin implements Listener {
 	public static PlayerUtils Putils = new PlayerUtils();
-
-	public static QuestTracker qt = new QuestTracker();
+	
 	public static DatabaseAccess dba = new DatabaseAccess();
 	public BukkitScheduler scheduler = getServer().getScheduler();
 
@@ -141,6 +136,7 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 	public void onEnable() {
 		DialogueSystem.init_dialog();
 
+		// Loading NPCs
 		WorldController.initializeNPC(new NPC("ROGUE_EXIT1", "Ragar the dumb", DialogueSystem.getNPCDialog("ROGUE_EXIT1")), WorldController.getFaction("faction_rogues"));
 		WorldController.initializeNPC(new NPC("ROGUE_ENTRANCE1", "temp_name", DialogueSystem.getNPCDialog("ROGUE_ENTRANCE1")), WorldController.getFaction("faction_rogues"));
 		WorldController.initializeNPC(new NPC("ROGUE_ENTRANCE2", "temp_name", DialogueSystem.getNPCDialog("ROGUE_ENTRANCE2")), WorldController.getFaction("faction_rogues"));
@@ -155,8 +151,7 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 
 		WorldController.initializeNPC(new NPC("MOOSHROOM_NPC", "Bessie", DialogueSystem.getNPCDialog("MOOSHROOM_NPC")), null);
 		
-		// Load order
-		
+		// Loading Spells
 		Assassinate as = new Assassinate();
 		GlobalSpellbook.getSpell(GlobalSpellbook.getSpellSize()-1).setISpell(as);
 		Blood_Shield bs = new Blood_Shield();
@@ -195,19 +190,15 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		GlobalSpellbook.getSpell(GlobalSpellbook.getSpellSize()-1).setISpell(es);
 		Plague_Touch pt = new Plague_Touch();
 		GlobalSpellbook.getSpell(GlobalSpellbook.getSpellSize()-1).setISpell(pt);
+		
+		// Loading Spell Passives
 		new Lifesteal();
 		
+		// Loading Group Classes
 		new Druid();
 		new Mage();
 		new Warrior();
 		new Rogue();
-		
-		try {
-			new NavigationQuest(45, 0, null, 0);
-		} catch (QuestIDInUse e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
 		// Initializing Weapon Prefixes
 		Minor m = new Minor();
@@ -221,6 +212,8 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		
 		DialogueSystem.init_dialog();
 		gameplayScheduler((Plugin) this);
+		
+		// Loads custom objects
 		new DruidClassBook();
 		new RogueClassBook();
 		new WarriorClassBook();
@@ -250,9 +243,8 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		Menu.getMenu(4).setIMenu(sc.getIMenu());
 		SpellBook sbm = new SpellBook();
 		Menu.getMenu(5).setIMenu(sbm.getIMenu());
-		BanMenu bm = new BanMenu();
-		Menu.getMenu(6).setIMenu(bm.getIMenu());
 
+		// Registering Commands
 		getServer().getPluginManager().registerEvents(this, (Plugin) this);
 		getCommand("class").setExecutor((CommandExecutor) new PickClass());
 		getCommand("level").setExecutor((CommandExecutor) new CheckLevel());
@@ -273,8 +265,6 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		getCommand("nfraid").setExecutor((CommandExecutor) new NFRaidMaker());
 		getCommand("nfinteractwith").setExecutor((CommandExecutor) new NFInteractWith());
 		getCommand("nfobjects").setExecutor((CommandExecutor) new NFObjects());
-		getCommand("tp").setExecutor((CommandExecutor) new NFTeleport());
-		getCommand("banmenu").setExecutor((CommandExecutor) new NFBanMenu());
 		
 		FileManager.exportNpc();
 		FileManager.exportDialog();
@@ -284,6 +274,11 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		TestQuest.addStep(new Step("Go to point A", "You were losting trying to do something", true, StepStatus.Inactive, EventFlags.LocationEvent));
+		@SuppressWarnings("unused")
+		TestQuest test_quest = new TestQuest();
+		
 	}
 
 	public void onDisable() {
@@ -309,8 +304,12 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
 		Player p1 = (Player) event.getWhoClicked();
-		NFPlayer player = NFPlayer.getPlayer(p1.getUniqueId());
-		if(player.getMenu() != null) {
+		NFPlayer player = null;
+		if(p1 != null) {
+		player = NFPlayer.getPlayer(p1.getUniqueId());
+		}
+		
+		if(player != null && player.getMenu() != null ) {
 			player.getMenu().runResponse(player, event.getRawSlot());
 			event.setCancelled(true);
 		}
@@ -328,16 +327,6 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		player.getInventory().setItem(0, new ItemStack(Material.AIR));
 		player.getInventory().setItem(1, new ItemStack(Material.AIR));
 		player.getInventory().setItem(2, new ItemStack(Material.AIR));
-		
-		// Specific Quest
-		if (event.getEntity().getKiller() instanceof Player && event.getEntity().getKiller() != null
-				&& QuestTracker.hasQuest(event.getEntity(), QuestTracker.grabQuest(3))
-				&& QuestTracker.playersQuest(3, event.getEntity()).getStatus() != 2) {
-			PVPQuest.completeStep(0, event.getEntity().getKiller(),
-					QuestTracker.playersQuest(3, event.getEntity().getKiller()));
-			QuestTracker.playersQuest(3, event.getEntity().getKiller())
-					.setCurSteps(QuestTracker.playersQuest(3, event.getEntity().getKiller()).getCurSteps() + 1);
-		}
 	}
 	
 	/* Player Respawn Event
