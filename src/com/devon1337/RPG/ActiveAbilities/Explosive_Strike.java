@@ -6,7 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import com.devon1337.RPG.NFClasses;
-import com.devon1337.RPG.PassiveAbilities.PassiveType;
+import com.devon1337.RPG.PassiveAbilities.Passive;
 import com.devon1337.RPG.Player.NFPlayer;
 import com.devon1337.RPG.Utils.AOEMapping.AreaMap;
 
@@ -20,7 +20,7 @@ public class Explosive_Strike extends Spell implements ISpell{
 	// Predefined Variables
 	static final String Name = "Explosive Strike", Description = "Hit a player causing an explosion that hits nearby enemies";
 	static final NFClasses classReq = NFClasses.WARRIOR;
-	static final PassiveType[] availPassives = {null};
+	static final ArrayList<Passive> availPassives = new ArrayList<Passive>();
 	static final Material spellIcon = Material.IRON_SWORD;
 	static final SpellType spellType = SpellType.WeaponArt;
 	static final double DAMAGE = 3.0;
@@ -28,6 +28,7 @@ public class Explosive_Strike extends Spell implements ISpell{
 	
 	public Explosive_Strike() {
 		super(Name, Description, spellType, spellIcon, 10, 1, classReq, availPassives);
+		super.setSpell(this);
 	}
 	
 	public double use(Player player, ArrayList<Player> targets) {
@@ -54,4 +55,7 @@ public class Explosive_Strike extends Spell implements ISpell{
 		return null;
 	}
 	
+	public static void addPassive(Passive p) {
+		availPassives.add(p);
+	}
 }

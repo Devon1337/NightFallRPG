@@ -8,7 +8,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.devon1337.RPG.NFClasses;
-import com.devon1337.RPG.PassiveAbilities.PassiveType;
+import com.devon1337.RPG.PassiveAbilities.Passive;
 
 public class MOTW extends Spell implements ISpell{
 	
@@ -27,12 +27,13 @@ public class MOTW extends Spell implements ISpell{
 	// Predefined Variables
 	static final String Name = "Mark of the Wild", Description = "Become temporarily gifted!";
 	static final NFClasses classReq = NFClasses.DRUID;
-	static final PassiveType[] availPassives = { null };
+	static final ArrayList<Passive> availPassives = new ArrayList<Passive>();
 	static final Material spellIcon = Material.BROWN_DYE;
 	static final SpellType spellType = SpellType.QuickCast;
 
 	public MOTW() {
 		super(Name, Description, spellType, spellIcon, 10, 5, classReq, availPassives);
+		super.setSpell(this);
 	}
 
 	public static void use(Player player) {
@@ -52,5 +53,9 @@ public class MOTW extends Spell implements ISpell{
 	public ISpell getISpell() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public static void addPassive(Passive p) {
+		availPassives.add(p);
 	}
 }

@@ -23,6 +23,7 @@ public class GameMasterMenu extends Menu implements InventoryHolder, IMenu {
 
 	public GameMasterMenu() {
 		super(Title);
+		super.setMenu(this);
 	}
 
 	public void init_items() {
@@ -59,9 +60,9 @@ public class GameMasterMenu extends Menu implements InventoryHolder, IMenu {
 	}
 
 	@Override
-	public void Response(NFPlayer player, int slot) {
+	public boolean Response(NFPlayer player, int slot) {
 		// TODO Auto-generated method stub
-		
+		return false;
 	}
 
 	@Override

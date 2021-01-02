@@ -55,4 +55,5 @@ public class Swap {
 		}
 		pCooldowns.put(player, Integer.valueOf(cooldown_amount));
 	}
+	
 }

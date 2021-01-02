@@ -7,9 +7,12 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.devon1337.RPG.NFClasses;
 import com.devon1337.RPG.ActiveAbilities.GlobalSpellbook;
+import com.devon1337.RPG.ActiveAbilities.Spell;
 import com.devon1337.RPG.Player.NFPlayer;
+
+import lombok.Getter;
+import lombok.Setter;
 
 public abstract class Passive implements java.io.Serializable {
 
@@ -18,19 +21,18 @@ public abstract class Passive implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = 2281975162444200530L;
 	String name, description;
-	int id, level;
-	NFClasses pClass;
+	int level;
 	PassiveType pType;
 	ItemStack item;
 	
+	@Getter @Setter
+	IPassive passive;
 	
 	public static Material DefaultIcon = Material.IRON_SWORD;
 	
-	public Passive(String name, int id, int level, NFClasses pClass, PassiveType pType, Material mat) {
+	public Passive(String name, int level, PassiveType pType, Material mat) {
 		this.name = name;
-		this.id = id;
 		this.level = level;
-		this.pClass = pClass;
 		this.pType = pType;
 		item = generateItem(mat, 1, this);
 		GlobalSpellbook.addPassive(this);
@@ -56,13 +58,8 @@ public abstract class Passive implements java.io.Serializable {
 		return this.pType;
 	}
 	
-	@SuppressWarnings("incomplete-switch")
-	public void run(NFPlayer player, double DamageAmount) {
-		switch(this.pType) {
-		case Lifesteal:
-			Lifesteal.run(player, DamageAmount, level);
-			break;
-		}
+	public void run(Spell s, NFPlayer player, NFPlayer target) {
+		this.passive.run(s, player, target);
 	}
 
 	

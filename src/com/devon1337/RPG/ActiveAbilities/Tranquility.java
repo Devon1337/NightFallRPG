@@ -8,7 +8,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.devon1337.RPG.NFClasses;
-import com.devon1337.RPG.PassiveAbilities.PassiveType;
+import com.devon1337.RPG.PassiveAbilities.Passive;
 
 public class Tranquility extends Spell implements ISpell{
 	
@@ -25,12 +25,13 @@ public class Tranquility extends Spell implements ISpell{
 	// Predefined Variables
 	static final String Name = "Tranquility", Description = "Time to lowkey take a nap";
 	static final NFClasses classReq = NFClasses.DRUID;
-	static final PassiveType[] availPassives = {null};
+	static final ArrayList<Passive> availPassives = new ArrayList<Passive>();
 	static final Material spellIcon = Material.IRON_SWORD;
 	static final SpellType spellType = SpellType.QuickCast;
 	
 	public Tranquility() {
 		super(Name, Description, spellType, spellIcon, 10, 5, classReq, availPassives);
+		super.setSpell(this);
 	}
 	
 	public void use(Player player, Player target) {
@@ -49,5 +50,9 @@ public class Tranquility extends Spell implements ISpell{
 	public ISpell getISpell() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public static void addPassive(Passive p) {
+		availPassives.add(p);
 	}
 }

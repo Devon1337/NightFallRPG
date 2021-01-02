@@ -26,22 +26,29 @@ public class NFTravel implements CommandExecutor {
 				} else {
 					player.sendMessage(ChatColor.DARK_RED + "Not enough arguments, /nftravel add {name} {highway}!");
 				}
-				break;
+				return true;
 
 			case "remove":
-				if (args.length == 2) {
-					FastTravel.removeWayPoint(FastTravel.getWayPoint(Integer.parseInt(args[1])));
+				if (args.length == 2 && FastTravel.getWayPoint(args[1]) != null) {
+					FastTravel.removeWayPoint(FastTravel.getWayPoint(args[1]));
 				} else {
 					player.sendMessage(ChatColor.DARK_RED + "Not enough arguments, /nftravel remove {waypoint_id}!");
 				}
-				break;
+				return true;
 
+			case "goto":
+				Point p = FastTravel.getWayPoint(args[1]);
+				if (args.length == 2 && p != null) {
+					player.teleport(p.getLocation());
+				}
+
+				return true;
 			default:
 				player.sendMessage(ChatColor.DARK_RED + "Incorrect syntax, /nftravel {add/remove}!");
 				break;
 			}
 
-		// Opening Travel UI
+			// Opening Travel UI
 		} else if (args.length == 0 && sender instanceof Player) {
 			Player player = (Player) sender;
 			Menu menu = Menu.getMenu(1);

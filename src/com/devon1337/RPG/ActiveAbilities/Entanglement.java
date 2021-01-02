@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 
 import com.devon1337.RPG.NFClasses;
 import com.devon1337.RPG.NightFallRPG;
-import com.devon1337.RPG.PassiveAbilities.PassiveType;
+import com.devon1337.RPG.PassiveAbilities.Passive;
 
 public class Entanglement extends Spell implements ISpell{
 	
@@ -19,12 +19,13 @@ public class Entanglement extends Spell implements ISpell{
 	// Predefined Variables
 	static final String Name = "Entanglement", Description = "Trap your enemies using the roots from the trees.";
 	static final NFClasses classReq = NFClasses.DRUID;
-	static final PassiveType[] availPassives = {null};
+	static final ArrayList<Passive> availPassives = new ArrayList<Passive>();
 	static final Material spellIcon = Material.IRON_SWORD;
 	static final SpellType spellType = SpellType.SkillShot;
 	
 	public Entanglement() {
 		super(Name, Description, spellType, spellIcon, 10, 1, classReq, availPassives);
+		super.setSpell(this);
 	}
 	
 
@@ -54,5 +55,9 @@ public class Entanglement extends Spell implements ISpell{
 	public ISpell getISpell() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public static void addPassive(Passive p) {
+		availPassives.add(p);
 	}
 }

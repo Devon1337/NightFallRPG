@@ -6,6 +6,8 @@ import com.devon1337.RPG.Utils.IMenu;
 import com.devon1337.RPG.Utils.InventoryAssistant;
 import com.devon1337.RPG.Utils.Menu;
 import com.devon1337.RPG.Utils.NFTType;
+import com.devon1337.RPG.Utils.Point;
+
 import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
@@ -23,24 +25,28 @@ public class FastTravelUI extends Menu implements InventoryHolder, IMenu {
 	private Inventory FTUI;
 	public static String Title = ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Fast Travel...";
 	int Page;
+	ArrayList<Point> availableTeleports = new ArrayList<Point>();
 
 	public FastTravelUI() {
 		super(Title);
+		super.setMenu(this);
 	}
 
 	// Creates Items used for GUI
 	public void init_items(Player player) {
 		this.FTUI = Bukkit.createInventory(this, InventoryAssistant.getInventorySize(3), FastTravelUI.Title);
+		availableTeleports.clear();
 		for (int i = 0; i < FastTravel.grabList().size(); i++) {
 			if ((player.hasPermission("nightfall.nftravel.druid")
-					&& FastTravel.getWayPoint(i).getType() == NFTType.Druid)
+					&& FastTravel.getPerciseWayPoint(i).getType() == NFTType.Druid)
 					|| (player.hasPermission("nightfall.nftravel.mage")
-							&& FastTravel.getWayPoint(i).getType() == NFTType.Mage)
+							&& FastTravel.getPerciseWayPoint(i).getType() == NFTType.Mage)
 					|| (player.hasPermission("nightfall.nftravel.gm")
-							&& FastTravel.getWayPoint(i).getType() == NFTType.GM)
-					|| player.isOp()) {
-				this.FTUI.setItem(i, createGuiItem(FastTravel.getWayPoint(i).getBlock(), 1,
-						FastTravel.getWayPoint(i).getName(), new String[] { "Click to Travel!" }));
+							&& FastTravel.getPerciseWayPoint(i).getType() == NFTType.GM)
+					|| player.isOp() || (FastTravel.getPerciseWayPoint(i).getType() == NFTType.Engine && player.hasPermission("nightfall.nftravel.engine"))) {
+				this.FTUI.setItem(i, createGuiItem(FastTravel.getPerciseWayPoint(i).getBlock(), 1,
+						FastTravel.getPerciseWayPoint(i).getName(), new String[] { "Click to Travel!" }));
+				this.availableTeleports.add(FastTravel.getPerciseWayPoint(i));
 			}
 		}
 	}
@@ -67,8 +73,10 @@ public class FastTravelUI extends Menu implements InventoryHolder, IMenu {
 	}
 
 	@Override
-	public void Response(NFPlayer player, int slot) {
-		// TODO Auto-generated method stub
+	public boolean Response(NFPlayer player, int slot) {
+		Point tpLoc = availableTeleports.get(slot);
+		Bukkit.getPlayer(player.getUUID()).teleport(tpLoc.getLocation());
+		return false;
 	}
 
 	@Override
@@ -86,7 +94,7 @@ public class FastTravelUI extends Menu implements InventoryHolder, IMenu {
 	public IMenu getIMenu() {
 		return (IMenu) this;
 	}
-	
+
 	public Inventory getInventory() {
 		return this.FTUI;
 	}

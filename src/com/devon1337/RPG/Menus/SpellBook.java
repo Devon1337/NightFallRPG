@@ -10,7 +10,9 @@ import com.devon1337.RPG.Utils.IMenu;
 import com.devon1337.RPG.Utils.InventoryAssistant;
 import com.devon1337.RPG.Utils.Menu;
 
-import java.util.ArrayList;
+import lombok.Getter;
+import lombok.Setter;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -25,63 +27,44 @@ public class SpellBook extends Menu implements InventoryHolder, IMenu {
 
 	private Inventory SB;
 	public static String Title = ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Spell Book";
-	int Pages;
+	int Pages = 0;
 
 	public PlayerUtils Putils = new PlayerUtils();
+	@Getter @Setter
 	public boolean assignMode = false;
-
+	
+	@Getter @Setter
+	int spellSlot;
+	
 	public SpellBook() {
 		super(Title);
+		super.setMenu(this);
 	}
-
-	@SuppressWarnings("deprecation")
+	
 	public void init_items(NFClasses classes, Player player) {
 		this.SB.clear();
-		int i = 0;
+		
+		int i = 10;
 		for (Spell s : GlobalSpellbook.getSpells()) {
-			Logging.OutputToPlayer("Spell Name:" + s.getName(), player);
-			Logging.OutputToPlayer("Spell Class:" + s.getClassReq(), player);
-			Logging.OutputToPlayer("Spell Level:" + s.getLevel(), player);
-			Logging.OutputToPlayer("Player Class:" + NFPlayer.getPlayer(player.getUniqueId()).getPlayerClass(), player);
-			Logging.OutputToPlayer("Player Level:" + NFPlayer.getPlayer(player.getUniqueId()).getLevel(), player);
-			if (s.getClassReq() == classes && s.getLevel() == NFPlayer.getPlayer(player.getUniqueId()).getLevel()) {
-				Logging.OutputToPlayer("Adding spell to spellbook", player);
+			if (s.getSpellClass() == classes && s.getLevel() == NFPlayer.getPlayer(player.getUniqueId()).getLevel()) {
 				this.SB.setItem(i, s.getItem());
-				i++;
+				i+=2;
 			}
-
 		}
-
-		this.SB.setItem(18, createGuiItem(Material.LEGACY_BOOK_AND_QUILL, 1, "Edit Spells", new String[0]));
-	}
-
-	public void assignSpells(Player player, int slot, NFClasses classes) {
-		player.getInventory().setItem(slot,
-				createGuiItem(Material.BARRIER, 1, "Spell Slot 1", new String[] { "dont-hide" }));
-		player.getInventory().setItem(slot,
-				createGuiItem(Material.BARRIER, 1, "Spell Slot 2", new String[] { "dont-hide" }));
-		player.getInventory().setItem(slot,
-				createGuiItem(Material.BARRIER, 1, "Spell Slot 3", new String[] { "dont-hide" }));
+		
+		for (i = 0; i < 27; i++) {
+			if(!(i == 10 || i == 12 || i == 14 || i == 16)) {
+				this.SB.setItem(i, createGuiItem(Material.GRAY_STAINED_GLASS_PANE, 1, " ", ""));
+			}
+		}
 	}
 
 	public ItemStack createGuiItem(Material material, int amount, String name, String... lore) {
 		ItemStack item = new ItemStack(material, amount);
 
 		ItemMeta meta = item.getItemMeta();
-
 		meta.setDisplayName(name);
-		ArrayList<String> metalore = new ArrayList<>();
-		byte b;
-		int i;
-		String[] arrayOfString;
-		for (i = (arrayOfString = lore).length, b = 0; b < i;) {
-			String lorecomments = arrayOfString[b];
-			metalore.add(lorecomments);
-			b++;
-		}
 		meta.addItemFlags(new ItemFlag[] { ItemFlag.HIDE_ATTRIBUTES });
-
-		meta.setLore(metalore);
 		item.setItemMeta(meta);
 		return item;
 	}
@@ -99,9 +82,26 @@ public class SpellBook extends Menu implements InventoryHolder, IMenu {
 	}
 
 	@Override
-	public void Response(NFPlayer player, int slot) {
+	public boolean Response(NFPlayer player, int slot) {
 		// TODO Auto-generated method stub
-
+		
+		// Picking the Spell
+		if(!this.isAssignMode() && this.SB.getContents()[slot] != null) {
+			Logging.OutputToPlayer("Assign mode on " + slot, player.getPlayer());
+			this.spellSlot = slot;
+			this.setAssignMode(true);
+			return true;
+			
+		// Assigning the Spell	
+		} else if(this.isAssignMode() && player.getPlayer().getInventory().getContents()[slot].getType() == Material.BARRIER) {
+			Logging.OutputToPlayer("Assign mode off " + this.SB.getItem(spellSlot).getItemMeta().getDisplayName(), player.getPlayer());
+			player.getPlayer().getInventory().setItem(slot, this.SB.getItem(spellSlot));
+			this.setAssignMode(false);
+			return true;
+		}
+		
+		return false;
+		
 	}
 
 	@Override
@@ -115,7 +115,7 @@ public class SpellBook extends Menu implements InventoryHolder, IMenu {
 		// TODO Auto-generated method stub
 		SB = Bukkit.createInventory(this, InventoryAssistant.getInventorySize(3), Title);
 		NFPlayer p2 = NFPlayer.getPlayer(player.getUniqueId());
-		init_items(p2.getPlayerClass(), player);
+		init_items(p2.getPClass().getClassEnum(), player);
 		return this.SB;
 	}
 }

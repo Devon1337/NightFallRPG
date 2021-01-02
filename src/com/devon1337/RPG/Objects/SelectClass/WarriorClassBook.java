@@ -1,4 +1,4 @@
-package com.devon1337.RPG.Objects.GroundZero;
+package com.devon1337.RPG.Objects.SelectClass;
 
 import java.util.List;
 

@@ -7,7 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import com.devon1337.RPG.NFClasses;
-import com.devon1337.RPG.PassiveAbilities.PassiveType;
+import com.devon1337.RPG.PassiveAbilities.Passive;
 import com.devon1337.RPG.Player.NFPlayer;
 
 public class Bounty extends Spell implements ISpell {
@@ -20,12 +20,13 @@ public class Bounty extends Spell implements ISpell {
 	// Predefined Variables
 	static final String Name = ChatColor.GOLD + "Bounty", Description = "Make a player temporarily wanted and lower their resistance!";
 	static final NFClasses classReq = NFClasses.ROGUE;
-	static final PassiveType[] availPassives = { null };
+	static final ArrayList<Passive> availPassives = new ArrayList<Passive>();
 	static final Material spellIcon = Material.BLACK_WOOL;
 	static final SpellType spellType = SpellType.WeaponArt;
 
 	public Bounty() {
 		super(Name, Description, spellType, spellIcon, 10, 1, classReq, availPassives);
+		super.setSpell(this);
 	}
 
 	
@@ -51,5 +52,9 @@ public class Bounty extends Spell implements ISpell {
 	public ISpell getISpell() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public static void addPassive(Passive p) {
+		availPassives.add(p);
 	}
 }

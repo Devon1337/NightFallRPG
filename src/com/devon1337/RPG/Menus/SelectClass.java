@@ -29,6 +29,7 @@ public class SelectClass extends Menu implements InventoryHolder, IMenu {
 	
 	public SelectClass() {
 		super(Title);
+		super.setMenu(this);
 	}
 
 	public void init_items() {
@@ -45,10 +46,11 @@ public class SelectClass extends Menu implements InventoryHolder, IMenu {
 	}
 
 	@Override
-	public void Response(NFPlayer player, int slot) {
+	public boolean Response(NFPlayer player, int slot) {
 		// TODO Auto-generated method stub
-		player.addClass(GroupClass.getClass(slot));
+		player.setPClass(GroupClass.getClass(slot));
 		player.getPlayerFromUUID().closeInventory();
+		return false;
 	}
 
 	@Override

@@ -8,20 +8,27 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class Point implements java.io.Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6161192230314637377L;
-	private int x;
-	private int y;
-	private int z;
-	private float pitch;
+	@Getter @Setter
+	private int x, y, z;
+
+	@Getter @Setter
+	private float pitch, yaw;
+	@Getter
 	private Material block = Material.VINE;
-	private float yaw;
+	@Getter
 	private String name;
+	@Getter
 	private NFTType type;
+	@Getter
 	private World world;
 
 	@Deprecated
@@ -50,52 +57,12 @@ public class Point implements java.io.Serializable {
 		FileManager.exportPoint(this);
 	}
 
-	public int getX() {
-		return this.x;
-	}
-
-	public int getY() {
-		return this.y;
-	}
-
-	public int getZ() {
-		return this.z;
-	}
-
-	public float getYaw() {
-		return this.yaw;
-	}
-
-	public float getPitch() {
-		return this.pitch;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public NFTType getType() {
-		return this.type;
-	}
-
-	public World getWorld() {
-		return this.world;
-	}
-
 	public void setWorld(World world) {
 		this.world = world;
 	}
 
-	public Material getBlock() {
-		return this.block;
-	}
-
-	public void setBlock(Material block) {
-		this.block = block;
+	public Location getLocation() {
+		return new Location(this.world, this.x, this.y, this.z, this.yaw, this.pitch);
 	}
 	
 	// I/O for NFPlayer
@@ -106,13 +73,22 @@ public class Point implements java.io.Serializable {
 			stream.writeFloat(pitch);
 			stream.writeFloat(yaw);
 			stream.writeObject(name);
-			stream.writeObject(type.getName());	
+			stream.writeObject(type);
 			stream.writeObject(world.getName());
 	}
 	
 	public static void readObject(java.io.ObjectInputStream stream) throws IOException {
 		try {
-			FastTravel.addWayPoint(new Point(stream.readInt(),stream.readInt(),stream.readInt(),stream.readFloat(),stream.readFloat(),(String) stream.readObject(), NFTType.getType((String) stream.readObject()), Bukkit.getWorld((String) stream.readObject())));
+			int x = stream.readInt();
+			int y = stream.readInt();
+			int z = stream.readInt();
+			float pitch = stream.readFloat();
+			float yaw = stream.readFloat();
+			String name = (String) stream.readObject();
+			NFTType type = (NFTType) stream.readObject();
+			World w = Bukkit.getWorld((String) stream.readObject());
+			
+			FastTravel.addWayPoint(new Point(x,y,z,pitch,yaw,name, type, w));
 		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

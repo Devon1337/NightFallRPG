@@ -1,4 +1,4 @@
-package com.devon1337.RPG.Objects.GroundZero;
+package com.devon1337.RPG.Objects.SelectClass;
 
 import java.util.List;
 
@@ -13,27 +13,27 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 
-public class MageClassBook extends NFObject {
+public class RogueClassBook extends NFObject {
 
-	static String Name = "Mage Class Book";
+	static String Name = "Rogue Class Book";
 
-	static String Description = "Become a mage!";
+	static String Description = "Become a Rogue!";
 	
 	static ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
 	static BookMeta bookMeta = (BookMeta) book.getItemMeta();
 	List<BaseComponent[]> pages = bookMeta.spigot().getPages();
 	
-	public MageClassBook() {
+	public RogueClassBook() {
 		super(InitBook(), Name, Description);
 	}
 	
 	// Creates the book
 	public static ItemStack InitBook() {
-		bookMeta.setTitle("Mage_Class_Book");
+		bookMeta.setTitle("Rogue_Class_Book");
 		bookMeta.setAuthor("Author");
-		BaseComponent[] page = new ComponentBuilder("Join Mage")
-				.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/warp mage"))
-				.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Join the fight against the mages").create()))
+		BaseComponent[] page = new ComponentBuilder("Join Rogue")
+				.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/warp Rogue_Start"))
+				.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Edge boy").create()))
 				.create();
 		
 		bookMeta.spigot().addPage(page);

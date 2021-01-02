@@ -5,15 +5,21 @@ import java.util.ArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 
 import com.devon1337.RPG.Player.NFPlayer;
+
+import lombok.Getter;
+import lombok.Setter;
 
 public abstract class Menu {
 
 	String TITLE;
 	Inventory Inv;
-	IMenu IInv;
+	
+	@Getter @Setter
+	IMenu menu;
 	int ID;
 	
 	static ArrayList<Menu> Global_Menu = new ArrayList<Menu>();
@@ -27,7 +33,7 @@ public abstract class Menu {
 	public void openNFInventory(NFPlayer player) {
 		Player p1 = Bukkit.getPlayer(player.getUUID());
 		player.setMenu(this);
-		this.Inv = IInv.open(Bukkit.getPlayer(player.getUUID()));
+		this.Inv = menu.open(Bukkit.getPlayer(player.getUUID()));
 		
 		// Checks if the player has permission the enter the menu!
 		if (this.Inv != null) {
@@ -37,16 +43,12 @@ public abstract class Menu {
 		}
 	}
 	
-	public void runResponse(NFPlayer player, int slot) {
-		IInv.Response(player, slot * (1+IInv.getPage()));
+	public void runResponse(NFPlayer player, int slot, InventoryClickEvent e) {
+		e.setCancelled(!menu.Response(player, slot * (1+menu.getPage())));
 	}
 	
 	public String getTitle() {
 		return this.TITLE;
-	}
-	
-	public void setIMenu(IMenu IInv) {
-		this.IInv = IInv;
 	}
 	
 	public Inventory getInventory() {

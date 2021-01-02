@@ -7,7 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import com.devon1337.RPG.NFClasses;
-import com.devon1337.RPG.PassiveAbilities.PassiveType;
+import com.devon1337.RPG.PassiveAbilities.Passive;
 import com.devon1337.RPG.Player.NFPlayer;
 
 public class Blood_Shield extends Spell implements ISpell {
@@ -20,13 +20,14 @@ public class Blood_Shield extends Spell implements ISpell {
 		// Predefined Variables
 		static final String Name = ChatColor.DARK_RED + "Soul Drain", Description = "Drain the soul of nearby enemies";
 		static final NFClasses classReq = NFClasses.MAGE;
-		static final PassiveType[] availPassives = {PassiveType.Lifesteal};
+		static final ArrayList<Passive> availPassives = new ArrayList<Passive>();
 		static final Material spellIcon = Material.POTION;
 		static final double DamageAmount = 3.0D;
 		static final SpellType spellType = SpellType.GroupCast;
 		
 		public Blood_Shield() {
 			super(Name, Description, spellType, spellIcon, 10, 1, classReq, availPassives);
+			super.setSpell(this);
 		}
 		
 		public double use(Player sender, ArrayList<Player> targets) {
@@ -43,5 +44,9 @@ public class Blood_Shield extends Spell implements ISpell {
 		public ISpell getISpell() {
 			// TODO Auto-generated method stub
 			return null;
+		}
+		
+		public static void addPassive(Passive p) {
+			availPassives.add(p);
 		}
 }

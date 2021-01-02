@@ -23,6 +23,7 @@ public class RaycastHitEvent extends Event {
 		this.target = target;
 		this.spell = spell;
 		this.endPosition = Bukkit.getPlayer(target).getLocation();
+		arrow.remove();
 		Bukkit.getPluginManager().callEvent(this);
 	}
 	
