@@ -1,6 +1,10 @@
 package com.devon1337.RPG.Utils;
 
 import com.devon1337.RPG.Debugging.Logging;
+import com.devon1337.RPG.NPC.NPC;
+
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,28 +15,27 @@ public class Dialog implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -2423348137035693927L;
-	int ID;
 	int RightEdgeDistance_Text = 0;
 	int RightEdgeDistance_Name = 0;
 	String Code;
 	String Message;
-	String NPCName;
+	@Getter @Setter
+	NPC Npc;
 	Response[] Responses = new Response[4];
 	Dialog proceedDLog;
 	ArrayList<DialogFlags> flags = new ArrayList<>();
 
-	public Dialog(String Message, String NPCName) {
+	public Dialog(String Message, NPC Npc) {
 		this.Message = Message;
-		this.NPCName = NPCName;
+		this.Npc = Npc;
 	}
 
-	public Dialog(String Code, String Message, Response[] Responses, int ID, String NPCName) {
+	public Dialog(String Code, String Message, Response[] Responses, NPC Npc) {
 		Logging.OutputToConsole("Dialog: " + Code + " has been initialized!");
 		this.Code = Code;
 		this.Message = Message;
 		this.Responses = Responses;
-		this.ID = ID;
-		this.NPCName = NPCName;
+		this.Npc = Npc;
 	}
 
 	public Dialog getNextDialog() {
@@ -59,24 +62,12 @@ public class Dialog implements java.io.Serializable {
 		return this.Code;
 	}
 
-	public int getID() {
-		return this.ID;
-	}
-
 	public String getMessage() {
 		return this.Message;
 	}
 
 	public void setMessage(String Message) {
 		this.Message = Message;
-	}
-
-	public String getNPCName() {
-		return this.NPCName;
-	}
-
-	public void setNPCName(String NPCName) {
-		this.NPCName = NPCName;
 	}
 
 	public void removeFlag(DialogFlags flag) {
@@ -93,12 +84,11 @@ public class Dialog implements java.io.Serializable {
 	
 	public void writeObject(java.io.ObjectOutputStream stream) {
 		try {
-			stream.writeInt(ID);
 			stream.writeInt(RightEdgeDistance_Text);
 			stream.writeInt(RightEdgeDistance_Name);
 			stream.writeChars(Code);
 			stream.writeChars(Message);
-			stream.writeChars(NPCName);
+			stream.writeObject(Npc);
 			stream.writeObject(Responses);
 			stream.writeObject(flags);
 		} catch (IOException e) {

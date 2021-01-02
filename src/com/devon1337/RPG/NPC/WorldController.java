@@ -13,12 +13,12 @@
    public static ArrayList<NPC> AllNPC = new ArrayList<>();
    
    public static void initializeFaction(Faction faction) {
-     Logging.OutputToConsole("Initializing Faction: " + faction.Code + "!");
+     Logging.OutputToConsole("Initializing Faction: " + faction.getFaction() + "!");
      Factions.add(faction);
    }
    
    public static void initializeNPC(NPC npc, Faction faction) {
-     if (faction != null && getFaction(faction.Code) != null) {
+     if (faction != null && getFaction(faction.getFaction()) != null) {
        faction.addNPC(npc);
       Faction tempFac = faction;
        tempFac.linkFaction(npc);
@@ -29,9 +29,9 @@
      } 
    }
    
-   public static Faction getFaction(String Code) {
+   public static Faction getFaction(AllFactions fact) {
      for (int i = 0; i < Factions.size(); i++) {
-       if (((Faction)Factions.get(i)).Code.equals(Code)) {
+       if (((Faction)Factions.get(i)).getFaction().equals(fact)) {
          return Factions.get(i);
        }
      } 
@@ -75,7 +75,4 @@
      return null;
    }
    
-   public static NPC emulateNPC(String name) {
-    return new NPC(name);
-   }
  }

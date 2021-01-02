@@ -26,6 +26,7 @@ public class CreativeObjectMenu extends Menu implements InventoryHolder, IMenu{
 	
 	public CreativeObjectMenu() {
 		super(Title);
+		super.setMenu(this);
 	}
 	
 	public void init_items() {
@@ -54,8 +55,9 @@ public class CreativeObjectMenu extends Menu implements InventoryHolder, IMenu{
 		return item;
 	}
 
-	public void Response(NFPlayer player, int index) {
+	public boolean Response(NFPlayer player, int index) {
 		Bukkit.getPlayer(player.getUUID()).getInventory().addItem(NFObject.getObject(index).getItem());
+		return false;
 	}
 
 	public Inventory open(Player player) {

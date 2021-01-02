@@ -2,6 +2,9 @@ package com.devon1337.RPG.Quests;
 
 import java.util.ArrayList;
 
+import com.devon1337.RPG.Debugging.Logging;
+import com.devon1337.RPG.NPC.Faction;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,6 +28,9 @@ public abstract class Quest {
 	@Getter @Setter
 	QuestStatus status;
 	
+	@Getter @Setter
+	Faction faction;
+	
 	@Getter
 	static ArrayList<Quest> allQuests = new ArrayList<Quest>();
 	
@@ -38,6 +44,7 @@ public abstract class Quest {
 		this.status = status;
 		this.QuestID = allQuests.size();
 		CurrentStep = 0;
+		Logging.OutputToConsole("Quest Created: " + this.Name);
 		
 		allQuests.add(this);
 	}

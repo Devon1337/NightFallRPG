@@ -25,8 +25,18 @@ public class FastTravel {
 		wayPoints.remove(p1);
 	}
 
-	// Gets Waypoint from Index
-	public static Point getWayPoint(int index) {
+	// Gets Waypoint from Code (rogue_start)
+	public static Point getWayPoint(String code) {
+		for(Point p : wayPoints) {
+			if(p.getName().equals(code)) {
+				return p;
+			}
+		}
+		return null;
+	}
+	
+	// Gets Waypoint from index
+	public static Point getPerciseWayPoint(int index) {
 		return wayPoints.get(index);
 	}
 

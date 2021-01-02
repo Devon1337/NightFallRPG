@@ -2,7 +2,6 @@ package com.devon1337.RPG.Utils;
 
 import com.devon1337.RPG.Debugging.Logging;
 import com.devon1337.RPG.NPC.NPC;
-import com.devon1337.RPG.NPC.WorldController;
 import com.devon1337.RPG.NightFallRPG;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -20,6 +19,7 @@ public class DialogueSystem {
 	public static int rightEdgeDistance = 0;
 
 	public static void init_dialog() {
+		/*
 		GLOBAL_DIALOG_LIST.add(new Dialog("ROGUE_QUEST_1_2", "You're the least bit useful!",
 				generateResponseArray(new Response[] { new Response("/nfprint ...", "...", 0, null, null) }), 0,
 				"ROGUE_EXIT1"));
@@ -84,13 +84,14 @@ public class DialogueSystem {
 		((Dialog) GLOBAL_DIALOG_LIST.get(7)).proceedDLog = GLOBAL_DIALOG_LIST.get(8);
 		((Dialog) GLOBAL_DIALOG_LIST.get(7)).addFlag(DialogFlags.START);
 		((Dialog) GLOBAL_DIALOG_LIST.get(7)).addFlag(DialogFlags.NOINPUT);
+		 */
 	}
 
 	public static ArrayList<Dialog> getNPCDialog(String code) {
 		ArrayList<Dialog> temp = new ArrayList<>();
 
 		for (int i = 0; i < GLOBAL_DIALOG_LIST.size(); i++) {
-			if (((Dialog) GLOBAL_DIALOG_LIST.get(i)).NPCName.equals(code)
+			if (((Dialog) GLOBAL_DIALOG_LIST.get(i)).getNpc().getName().equals(code)
 					&& ((Dialog) GLOBAL_DIALOG_LIST.get(i)).getFlags().contains(DialogFlags.START)) {
 				Logging.OutputToConsole("NPC: " + code + " Dialog: " + ((Dialog) GLOBAL_DIALOG_LIST.get(i)).Code);
 				temp.add(GLOBAL_DIALOG_LIST.get(i));

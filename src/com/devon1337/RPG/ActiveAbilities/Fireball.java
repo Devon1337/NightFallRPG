@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 
 import com.devon1337.RPG.NFClasses;
 import com.devon1337.RPG.Debugging.Logging;
-import com.devon1337.RPG.PassiveAbilities.PassiveType;
+import com.devon1337.RPG.PassiveAbilities.Passive;
 import com.devon1337.RPG.Player.NFPlayer;
 import com.devon1337.RPG.Utils.NFParticle;
 
@@ -21,7 +21,7 @@ public class Fireball extends Spell implements ISpell{
 	// Predefined Variables
 	static final String Name = ChatColor.GOLD + "Fire" + ChatColor.YELLOW + "ball", Description = "Shoot a directed shot at a player!";
 	static final NFClasses classReq = NFClasses.MAGE;
-	static final PassiveType[] availPassives = {null};
+	static final ArrayList<Passive> availPassives = new ArrayList<Passive>();
 	static final Material spellIcon = Material.ORANGE_DYE;
 	static final SpellType spellType = SpellType.SkillShot;
 	
@@ -29,6 +29,7 @@ public class Fireball extends Spell implements ISpell{
 	
 	public Fireball() {
 		super(Name, Description, spellType, spellIcon, 10, 1, classReq, availPassives);
+		super.setSpell(this);
 	}
 	
 	public double use(Player player, ArrayList<Player> targets) {
@@ -55,5 +56,9 @@ public class Fireball extends Spell implements ISpell{
 	public ISpell getISpell() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public static void addPassive(Passive p) {
+		availPassives.add(p);
 	}
 }

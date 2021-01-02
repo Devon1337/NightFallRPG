@@ -1,26 +1,27 @@
 package com.devon1337.RPG.PassiveAbilities;
 
 import org.bukkit.Material;
-import com.devon1337.RPG.NFClasses;
+import com.devon1337.RPG.ActiveAbilities.Spell;
 import com.devon1337.RPG.Player.NFPlayer;
 
-public class Lifesteal extends Passive {
+public class Lifesteal extends Passive implements IPassive {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -9115564552843469498L;
-	int extraLevels;
+	static final String NAME = "Lifesteal";
 	static Material mat = Material.IRON_SWORD;
 
 	public Lifesteal() {
-		super("Lifesteal", 0, 1, NFClasses.ROGUE, PassiveType.Lifesteal, mat);
+		super(NAME, 1, PassiveType.Lifesteal, mat);
+		super.setPassive(this);
 	}
 	
-	public static void run(NFPlayer player, double DamageAmount, int level) {
-		double modifier = 1.0*(1.5*(1-level));
+	public void run(Spell s, NFPlayer player, NFPlayer target) {
+		double modifier = 1.0*(1.5*(1-this.getLevel()));
 		
-		double healAmount = (DamageAmount*modifier);
+		double healAmount = (s.getDamageAmount()*modifier);
 		if((player.getHp() + healAmount) > player.getMaxHp()) {
 			healAmount = healAmount - ((player.getHp() + healAmount) - player.getMaxHp());
 		}

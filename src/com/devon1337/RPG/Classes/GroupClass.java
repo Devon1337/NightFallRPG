@@ -21,9 +21,9 @@ public class GroupClass {
 	String name, description;
 	NFClasses classes;
 	ItemStack icon;
-	float[] reputation;
+	int[] reputation;
 	
-	public GroupClass(String name, String description, NFClasses classes, Material item, float[] reputation) {
+	public GroupClass(String name, String description, NFClasses classes, Material item, int[] reputation) {
 		this.name = name;
 		this.description = description;
 		this.classes = classes;
@@ -57,7 +57,7 @@ public class GroupClass {
 		Spell[] sTemp = new Spell[3];
 		int i = 0;
 		for(Spell s : GlobalSpellbook.getSpells()) {
-			if(s.getClassReq() == this.classes && s.getLevel() == 1 && i < 3) {
+			if(s.getSpellClass() == this.classes && s.getLevel() == 1 && i < 3) {
 				sTemp[i] = s;
 				i++;
 				

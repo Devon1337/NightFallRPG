@@ -16,7 +16,7 @@ import org.inventivetalent.glow.GlowAPI;
 
 import com.devon1337.RPG.NFClasses;
 import com.devon1337.RPG.NightFallRPG;
-import com.devon1337.RPG.PassiveAbilities.PassiveType;
+import com.devon1337.RPG.PassiveAbilities.Passive;
 
 public class NightmareSlasher extends Spell implements ISpell{
 
@@ -27,13 +27,14 @@ public class NightmareSlasher extends Spell implements ISpell{
 	// Predefined Variables
 	static final String Name = ChatColor.GRAY + "Nightmare " + ChatColor.DARK_GRAY + "Slasher", Description = "Enter someone's dreams to seperate their body.";
 	static final NFClasses classReq = NFClasses.ROGUE;
-	static final PassiveType[] availPassives = {PassiveType.Lifesteal};
+	static final ArrayList<Passive> availPassives = new ArrayList<Passive>();
 	static final Material spellIcon = Material.IRON_SWORD;
 	static final NamespacedKey key = new NamespacedKey(NightFallRPG.getPlugin(), "nm_slasher");
 	static final SpellType spellType = SpellType.WeaponArt;
 	
 	public NightmareSlasher() {
 		super(Name, Description, spellType, spellIcon, 10, 1, classReq, availPassives);
+		super.setSpell(this);
 	}
 	
 	public static ItemStack getWeapon() {
@@ -83,5 +84,9 @@ public class NightmareSlasher extends Spell implements ISpell{
 	public ISpell getISpell() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public static void addPassive(Passive p) {
+		availPassives.add(p);
 	}
 }

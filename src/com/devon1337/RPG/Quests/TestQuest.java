@@ -17,7 +17,7 @@ public class TestQuest extends Quest {
 	
 	static ArrayList<Step> steps = new ArrayList<Step>();
 	static ArrayList<EventFlags> flags = new ArrayList<EventFlags>();
-	static QuestStatus status;
+	static QuestStatus status = QuestStatus.Incomplete;
 
 	public TestQuest() {
 		super(TITLE, DESCRIPTION, XP_Amount, Gold_Amount, steps, flags, status);

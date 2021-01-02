@@ -7,7 +7,7 @@ import com.devon1337.RPG.Player.NFPlayer;
 
 public interface IMenu {
 
-	void Response(NFPlayer player, int slot);
+	boolean Response(NFPlayer player, int slot);
 	int getPage();
 	Inventory open(Player player);
 }

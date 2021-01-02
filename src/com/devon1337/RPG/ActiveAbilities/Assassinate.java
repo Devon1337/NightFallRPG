@@ -8,7 +8,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 
 import com.devon1337.RPG.NFClasses;
-import com.devon1337.RPG.PassiveAbilities.PassiveType;
+import com.devon1337.RPG.PassiveAbilities.Passive;
 
 public class Assassinate extends Spell implements ISpell {
 
@@ -22,13 +22,13 @@ public class Assassinate extends Spell implements ISpell {
 	// Predefined Variables
 	static final String Name = "Assassinate", Description = "When a player is below 30% HP it will instantly kill the target!";
 	static final NFClasses classReq = NFClasses.ROGUE;
-	static final PassiveType[] availPassives = {PassiveType.Lifesteal};
+	static final ArrayList<Passive> availPassives = new ArrayList<Passive>();
 	static final Material spellIcon = Material.IRON_SWORD;
 	static final SpellType spellType = SpellType.SkillShot;
 	
 	public Assassinate() {
-		//Object obj = Assassinate.class.getInterfaces()[0];
 		super(Name, Description, spellType, spellIcon, 10, 5, classReq,  availPassives);
+		super.setSpell(this);
 	}
 	
 	public double use(Player player, ArrayList<Player> targets) {
@@ -56,5 +56,9 @@ public class Assassinate extends Spell implements ISpell {
 	
 	public ISpell getISpell() {
 		return (ISpell) this;
+	}
+	
+	public static void addPassive(Passive p) {
+		availPassives.add(p);
 	}
 }

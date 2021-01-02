@@ -23,6 +23,7 @@ public class LevelUpMenu extends Menu implements InventoryHolder, IMenu {
 
 	public LevelUpMenu() {
 		super(Title);
+		super.setMenu(this);
 	}
 
 	public void init_items(Player player) {
@@ -36,7 +37,7 @@ public class LevelUpMenu extends Menu implements InventoryHolder, IMenu {
 		// grabs spells players gets during level up
 		for (Spell s : GlobalSpellbook.getSpells()) {
 			if (s.getLevel() == NFPlayer.getPlayer(player.getUniqueId()).getLevel()
-					&& s.getClassReq() == NFPlayer.getPlayer(player.getUniqueId()).getPlayerClass()) {
+					&& s.getSpellClass() == NFPlayer.getPlayer(player.getUniqueId()).getPClass().getClassEnum()) {
 				this.LUM.setItem(11 + (2 * i), s.getItem());
 				i++;
 			}
@@ -64,9 +65,9 @@ public class LevelUpMenu extends Menu implements InventoryHolder, IMenu {
 	}
 
 	@Override
-	public void Response(NFPlayer player, int slot) {
+	public boolean Response(NFPlayer player, int slot) {
 		// TODO Auto-generated method stub
-
+		return false;
 	}
 
 	@Override

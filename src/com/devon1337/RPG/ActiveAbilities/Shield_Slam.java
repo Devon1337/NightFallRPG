@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 
 import com.devon1337.RPG.NFClasses;
 import com.devon1337.RPG.NightFallRPG;
-import com.devon1337.RPG.PassiveAbilities.PassiveType;
+import com.devon1337.RPG.PassiveAbilities.Passive;
 
 public class Shield_Slam extends Spell implements ISpell{
 	
@@ -19,12 +19,13 @@ public class Shield_Slam extends Spell implements ISpell{
 	// Predefined Variables
 	static final String Name = "Shield Slam", Description = "Break er knee caps";
 	static final NFClasses classReq = NFClasses.WARRIOR;
-	static final PassiveType[] availPassives = {};
+	static final ArrayList<Passive> availPassives = new ArrayList<Passive>();
 	static final Material spellIcon = Material.IRON_SWORD;
 	static final SpellType spellType = SpellType.GroupCast;
 	
 	public Shield_Slam() {
 		super(Name, Description, spellType, spellIcon, 10, 1, classReq, availPassives);
+		super.setSpell(this);
 	}
 	
 	public double use(Player player, ArrayList<Player> targets) {
@@ -50,5 +51,9 @@ public class Shield_Slam extends Spell implements ISpell{
 	public ISpell getISpell() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public static void addPassive(Passive p) {
+		availPassives.add(p);
 	}
 }
