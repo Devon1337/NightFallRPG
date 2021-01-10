@@ -79,6 +79,7 @@ import com.devon1337.RPG.Quests.StepStatus;
 import com.devon1337.RPG.Quests.TestQuest;
 import com.devon1337.RPG.Quests.Warrior.WarriorStart;
 import com.devon1337.RPG.Utils.DialogueSystem;
+import com.devon1337.RPG.Utils.EcoSystem;
 import com.devon1337.RPG.Utils.FileManager;
 import com.devon1337.RPG.Utils.FriendsList;
 import com.devon1337.RPG.Utils.MOTD;
@@ -93,10 +94,14 @@ import com.devon1337.RPG.WeaponEffects.Effects.Type.Frozen;
 import com.devon1337.RPG.Utils.Raycast.RaycastHitEvent;
 import com.devon1337.RPG.raid.MatchmakingController;
 
+import lombok.Getter;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import net.milkbowl.vault.economy.Economy;
 import net.raidstone.wgevents.events.RegionEnteredEvent;
 import net.raidstone.wgevents.events.RegionLeftEvent;
 
@@ -130,6 +135,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -139,6 +145,9 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 	
 	public static DatabaseAccess dba = new DatabaseAccess();
 	public BukkitScheduler scheduler = getServer().getScheduler();
+	
+	@Getter 
+	public static Economy econ;
 
 	public static Scanner input = new Scanner(System.in);
 
@@ -275,6 +284,11 @@ public class NightFallRPG extends JavaPlugin implements Listener {
 		for(Player player : Bukkit.getOnlinePlayers()) {
 			FileManager.importPlayer(player.getUniqueId());
 		}
+		
+		if (getPlugin().getServer().getPluginManager().isPluginEnabled("Vault")) {
+            getPlugin().getServer().getServicesManager().register(Economy.class, new EcoSystem(this), getPlugin(), ServicePriority.Normal);
+        }
+		
 	}
 	
 	public void onDisable() {
