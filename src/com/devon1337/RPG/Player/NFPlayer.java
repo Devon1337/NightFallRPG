@@ -36,7 +36,7 @@ public class NFPlayer implements java.io.Serializable {
 	int Level, xp, xpReq;
 	boolean online = false, isDead = false;
 	float xpGainMod = 1, damageResistance = 1.0f, playerSpeed;
-	double currentHP, maxHp = 20;
+	double currentHP, maxHp = 20, money = 0.0;
 	
 	@Getter @Setter
 	Region region;
